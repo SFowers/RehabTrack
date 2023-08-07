@@ -1,6 +1,6 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { FlatList } from 'react-native';
+// import { FlatList } from 'react-native';
 import { StyleSheet, Button, Text, View } from 'react-native';
 
 //export default FlatListBasics;
@@ -21,6 +21,10 @@ export default function HomeScreen({ navigation }) {
         <Button 
             title="Rehab Charts"
             onPress={() => navigation.navigate("Chart Tool")}
+        />
+        <Button 
+            title="Data Export"
+            onPress={() => navigation.navigate("Data Export")}
         />
       </View>
     );

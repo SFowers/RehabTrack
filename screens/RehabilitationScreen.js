@@ -28,7 +28,12 @@ export default function RehabilitationScreen () {
           { timeDate: new Date(2023, 7, 1, 12, 0, 0, 0), reps: 12 },
         ]
       }
-  ]
+    ]
+  const normativeData = [
+    { dateTime: new Date(2023, 6, 30, 0, 0, 0, 0), normative: 6 },
+    { dateTime: new Date(2023, 6, 31, 0, 0, 0, 0), normative: 7 },
+    { dateTime: new Date(2023, 7, 1, 0, 0, 0, 0), normative: 9 },
+  ];
 
   return (
     <View>
