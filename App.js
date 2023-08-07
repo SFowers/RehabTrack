@@ -1,12 +1,14 @@
+import React from 'react';
 import 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 //import Navigator from './routes/homeStack';
 import HomeScreen from "./screens/HomeScreen";
 import NewSessionScreen from "./screens/NewSessionScreen";
 import PatientRecordsScreen from "./screens/PatientRecordsScreen";
+import RehabilitationChart from './RehabilitationChart';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,6 +30,11 @@ export default function App() {
           name="Patient Records"
           component={PatientRecordsScreen}
           options={{title: 'Patient Records'}}
+        />
+        <Stack.Screen
+          name="Rehabilitation"
+          component={RehabilitationScreen}
+          options={{ title: 'Rehabilitation Tool' }}
         />
       </Stack.Navigator>
     </NavigationContainer>
