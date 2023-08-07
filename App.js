@@ -8,7 +8,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from "./screens/HomeScreen";
 import NewSessionScreen from "./screens/NewSessionScreen";
 import PatientRecordsScreen from "./screens/PatientRecordsScreen";
-import RehabilitationChart from './RehabilitationChart';
+import RehabilitationScreen from './screens/RehabilitationScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -32,10 +32,11 @@ export default function App() {
           options={{title: 'Patient Records'}}
         />
         <Stack.Screen
-          name="Rehabilitation"
+          name="Chart Tool"
           component={RehabilitationScreen}
-          options={{ title: 'Rehabilitation Tool' }}
+          options={{ title: 'Rehabilitation Chart Tool' }}
         />
+        
       </Stack.Navigator>
     </NavigationContainer>
     /*

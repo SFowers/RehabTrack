@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import RehabilitationChart from './RehabilitationChart';
+import RehabilitationChart from '../patientdata/patientDataStructure';
 
-const RehabilitationScreen = () => {
+export default function RehabilitationScreen () {
   const exerciseData = [
       {
         name: "handWaves",
@@ -26,7 +26,7 @@ const RehabilitationScreen = () => {
           { timeDate: new Date(2023, 6, 30, 10, 0, 0, 0), reps: 8 },
           { timeDate: new Date(2023, 6, 31, 11, 0, 0, 0), reps: 9 },
           { timeDate: new Date(2023, 7, 1, 12, 0, 0, 0), reps: 12 },
-        ];
+        ]
       }
   ]
 
@@ -47,4 +47,4 @@ const styles = {
   },
 };
 
-export default RehabilitationScreen;
+//export default RehabilitationScreen;

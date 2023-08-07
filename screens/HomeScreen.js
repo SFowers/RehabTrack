@@ -18,6 +18,10 @@ export default function HomeScreen({ navigation }) {
             title="Patient Records"
             onPress={() => navigation.navigate("Patient Records")}
         />
+        <Button 
+            title="Rehab Charts"
+            onPress={() => navigation.navigate("Chart Tool")}
+        />
       </View>
     );
 }
