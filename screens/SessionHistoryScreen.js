@@ -5,21 +5,11 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import { styles } from '../stylesheet/Style';
 import { useNavigation } from '@react-navigation/native';
 
-export default function NewSessionScreen() {
+export default function SessionHistoryScreen() {
   const navigation = useNavigation();
     return (
       <View style={styles.container}>
         <StatusBar style="auto" />
-        
-        <View style={styles.selectionContainer}>
-          <TouchableOpacity style={styles.selectorButton}>
-            <Text style={styles.buttonText}>New Patient</Text>
-            <Icon name="plus" size={30} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.selectorButton}>
-            <Text style={styles.buttonText}>Assign Patient</Text>
-          </TouchableOpacity>
-        </View>
 
         <TouchableOpacity style={styles.navButton}
           onPress={() => navigation.navigate("Repetitions")}>

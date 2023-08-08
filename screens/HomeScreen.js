@@ -1,7 +1,8 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-// import { FlatList } from 'react-native';
-import { StyleSheet, Button, Text, View } from 'react-native';
+import { TouchableOpacity, Text, View } from 'react-native';
+import Icon from 'react-native-vector-icons/AntDesign';
+import { styles } from '../stylesheet/Style';
 
 //export default FlatListBasics;
 
@@ -9,58 +10,48 @@ export default function HomeScreen({ navigation }) {
     return (
       <View style={styles.container}>
         <StatusBar style="auto" />
-        <Button 
-            style={styles.navButton}
-            title="New Session"
-            onPress={() => navigation.navigate("New Session")}
-        />
-        <Button 
-            title="Patient Records"
-            onPress={() => navigation.navigate("Patient Records")}
-        />
-        <Button 
-            title="Rehab Charts"
-            onPress={() => navigation.navigate("Chart Tool")}
-        />
-        <Button 
-            title="Data Export"
-            onPress={() => navigation.navigate("Data Export")}
-        />
+
+        {/* NAV BUTTONS */}
+        {/* New Session */}
+        <TouchableOpacity style={styles.navButton} 
+            onPress={() => navigation.navigate("New Session")}>
+            <Icon name="plus" size={30} />
+            <Text style={styles.navText}>New Session</Text>
+            <Icon name="right" size={30} />
+        </TouchableOpacity>
+
+        {/* Patient Records */}
+        <TouchableOpacity style={styles.navButton} 
+            onPress={() => navigation.navigate("Patient Records")}>
+            <Icon name="folderopen" size={30} />
+            <Text style={styles.navText}>Patient Records</Text>
+            <Icon name="right" size={30} />
+        </TouchableOpacity>
+
+        {/* Settings */}
+        <TouchableOpacity style={styles.navButton} 
+            onPress={() => navigation.navigate("Settings")}>
+            <Icon name="setting" size={30} />
+            <Text style={styles.navText}>Settings</Text>
+            <Icon name="right" size={30} />
+        </TouchableOpacity>
+
+        {/* Data Export */}
+        <TouchableOpacity style={styles.navButton} 
+            onPress={() => navigation.navigate("Data Export")}>
+            <Icon name="export2" size={30} />
+            <Text style={styles.navText}>Data Export</Text>
+            <Icon name="right" size={30} />
+        </TouchableOpacity>
+        
+        {/* Chart Tool */}
+        <TouchableOpacity style={styles.navButton} 
+            onPress={() => navigation.navigate("Chart Tool")}>
+            <Icon name="linechart" size={30} />
+            <Text style={styles.navText}>Rehab Charts</Text>
+            <Icon name="right" size={30} />
+        </TouchableOpacity>
+
       </View>
     );
 }
-
-/*
-const FlatListBasics = () => {
-    return (
-        <View style={StyleSheet.container}>
-            <FlatList
-                data={[
-                    {key: 'New Session'},
-                    {key: 'Patient Records'},
-                    {key: 'Data Export'},
-                    {key: 'Settings'},
-                ]}
-                renderItem={({item}) => <Text style={styles.item}>{item.key}</Text>}
-            />
-        </View>
-    )
-}
-*/
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        paddingTop: 40,
-        paddingHorizontal: 20,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    navButton: {
-        marginTop: 24,
-        padding: 30,
-        backgroundColor: 'gray',
-        fontSize: 24
-    }
-})
