@@ -21,7 +21,7 @@ export default function PatientScreen() {
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.navButton} 
-            onPress={() => navigation.navigate("Progress Graph")}>
+            onPress={() => navigation.navigate("Graphing")}>
           <Text style={styles.navText}>Progress Graph</Text>
           <Icon name="right" size={30} />
         </TouchableOpacity>

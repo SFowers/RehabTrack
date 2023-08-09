@@ -28,13 +28,6 @@ export default function HomeScreen({ navigation }) {
             <Icon name="right" size={30} />
         </TouchableOpacity>
 
-        {/* Settings */}
-        <TouchableOpacity style={styles.navButton} 
-            onPress={() => navigation.navigate("Settings")}>
-            <Icon name="setting" size={30} />
-            <Text style={styles.navText}>Settings</Text>
-            <Icon name="right" size={30} />
-        </TouchableOpacity>
 
         {/* Data Export */}
         <TouchableOpacity style={styles.navButton} 
@@ -43,15 +36,23 @@ export default function HomeScreen({ navigation }) {
             <Text style={styles.navText}>Data Export</Text>
             <Icon name="right" size={30} />
         </TouchableOpacity>
-        
-        {/* Chart Tool */}
+
+        {/* Settings */}
         <TouchableOpacity style={styles.navButton} 
-            onPress={() => navigation.navigate("Chart Tool")}>
+            onPress={() => navigation.navigate("Settings")}>
+            <Icon name="setting" size={30} />
+            <Text style={styles.navText}>Settings</Text>
+            <Icon name="right" size={30} />
+        </TouchableOpacity>
+        
+        {/* Chart Tool 
+        <TouchableOpacity style={styles.navButton} 
+            onPress={() => navigation.navigate("Graphing")}>
             <Icon name="linechart" size={30} />
             <Text style={styles.navText}>Rehab Charts</Text>
             <Icon name="right" size={30} />
         </TouchableOpacity>
-
+        */}
       </View>
     );
 }
