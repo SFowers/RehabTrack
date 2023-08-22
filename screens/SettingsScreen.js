@@ -1,6 +1,5 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { FlatList } from 'react-native';
 import { Text, View } from 'react-native';
 import { styles } from '../stylesheet/Style';
 

@@ -1,14 +1,61 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Text, View } from 'react-native';
+import { Text, View, TouchableOpacity } from 'react-native';
 import { styles } from '../stylesheet/Style';
+import Icon from 'react-native-vector-icons/AntDesign';
+import DropDownPicker from 'react-native-dropdown-picker';
 
-export default function GraphingScreen() {
+export default function GraphingScreen( navigation ) {
     //let patients = route.params.patients;
     return (
       <View style={styles.container}>
-        <Text>Data Export</Text>
         <StatusBar style="auto" />
+        {/* THE GRAPH */}
+        <View style={styles.infoContainer}>
+          <Icon name="linechart" size={200} />
+        </View>
+        {/* DATE SELECTION FOR GRAPH */}
+        <Text style={styles.titleText}>Date Range</Text>
+        <View style={styles.infoContainer}>
+          <View style={styles.infoItem}>
+            <TouchableOpacity style={styles.infoItemButton}>
+              <Text>1/1/23</Text>
+            </TouchableOpacity>
+            <Text>{"\n"}To</Text>
+            <TouchableOpacity style={styles.infoItemButton}>
+              <Text>1/1/23</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        {/* WEEKLY/MONTHLY SUMMARY FOR GRAPH */}
+        <View style={styles.selectionContainer}>
+          <TouchableOpacity style={styles.selectorButton}>
+            <Text style={styles.buttonText}>Weekly Summary</Text>
+            <Icon name="calendar" size={30} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.selectorButton}>
+            <Text style={styles.buttonText}>Monthly Summary</Text>
+            <Icon name="calendar" size={30} />
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.titleText}>Graph Legends</Text>
+        <View style={styles.selectionContainer}>
+          <TouchableOpacity style={styles.selectorButton}>
+            <Text style={styles.buttonText}>Hand Waves</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.selectorButton}>
+            <Text style={styles.buttonText}>Across Table</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.selectorButton}>
+            <Text style={styles.buttonText}>Raise Arm</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.selectionContainer}>
+          <TouchableOpacity style={styles.selectorButton}>
+            <Text style={styles.buttonText}>Compare against the normative</Text>
+            <Icon name="right" size={30} />
+          </TouchableOpacity>
+        </View>
       </View>
     );
 }

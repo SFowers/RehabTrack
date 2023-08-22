@@ -1,14 +1,17 @@
 import React from "react";
 import "react-native-gesture-handler";
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, Image } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 //import Navigator from './routes/homeStack';
 import HomeScreen from "./screens/HomeScreen";
 import NewSessionScreen from "./screens/NewSessionScreen";
 import PatientRecordsScreen from "./screens/PatientRecordsScreen";
+import SettingsScreen from "./screens/SettingsScreen";
+import RepetitionsScreen from "./screens/RepetitionsScreen";
+import PatientScreen from "./screens/PatientScreen";
+import SessionHistoryScreen from "./screens/SessionHistoryScreen";
 import DataExportScreen from "./screens/DataExportScreen";
+import GraphingScreen from "./screens/GraphingScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -32,6 +35,31 @@ export default function App() {
           options={{ title: "Patient Records" }}
         />
         <Stack.Screen
+          name="Settings"
+          component={SettingsScreen}
+          options={{ title: "Settings" }}
+        />
+        <Stack.Screen
+          name="Repetitions"
+          component={RepetitionsScreen}
+          options={{ title: "Edit Repetitions" }}
+        />
+        <Stack.Screen
+          name="Patient"
+          component={PatientScreen}
+          options={{ title: "Patient" }}
+        />
+        <Stack.Screen
+          name="Session History"
+          component={SessionHistoryScreen}
+          options={{ title: "Session History" }}
+        /> 
+        <Stack.Screen
+          name="Graphing"
+          component={GraphingScreen}
+          options={{ title: "Graphing Screen" }}
+        />
+        <Stack.Screen
           name="Data Export"
           component={DataExportScreen}
           options={{ title: "Data Export" }}
@@ -47,12 +75,3 @@ export default function App() {
     */
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});

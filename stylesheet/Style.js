@@ -82,6 +82,27 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 10,
         backgroundColor: '#ff6677'
+    },
+    infoContainer: {
+        minWidth: 200,
+        justifyContent: 'space-evenly',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        padding: 10,
+        borderRadius: 10,
+        backgroundColor: '#DDDDDD'
+    },
+    infoItem: {
+        flexGrow: 1,
+        minWidth: 200,
+        justifyContent: 'space-evenly',
+        flexDirection: 'row',
+        padding: 10,
+    },
+    infoItemButton: {
+        backgroundColor: '#969595',
+        padding: 20,
+        borderRadius: 10,
     }
 });
 
