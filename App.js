@@ -1,8 +1,12 @@
 import React from "react";
 import "react-native-gesture-handler";
+//import "react-native-reanimated";
+import "react-native-safe-area-context";
+import "react-native-screens";
+
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-//import Navigator from './routes/homeStack';
+//Navigation Screens
 import HomeScreen from "./screens/HomeScreen";
 import NewSessionScreen from "./screens/NewSessionScreen";
 import PatientRecordsScreen from "./screens/PatientRecordsScreen";
