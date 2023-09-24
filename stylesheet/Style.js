@@ -103,7 +103,46 @@ const styles = StyleSheet.create({
         backgroundColor: '#969595',
         padding: 20,
         borderRadius: 10,
-    }
+    },
+
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+    modalContent: {
+        width: '80%', // Adjust the width as needed
+        backgroundColor: '#fff',
+        padding: 20,
+        borderRadius: 10,
+        borderColor: 'black',
+        borderWidth: 1,
+        alignItems: 'center',
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: 'black',
+        borderRadius: 5,
+        padding: 10,
+        marginBottom: 10,
+        width: '100%', // Adjust the width as needed
+    },
+    button: {
+        backgroundColor: '#DDDDDD', // Match your button color
+        padding: 10,
+        borderRadius: 7,
+        alignItems: 'center',
+        width: '100%', // Adjust the width as needed
+    },
+    textStyle: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: 'black', // Match your text color
+    },
+    buttonClose: {
+        backgroundColor: '#DDDDDD', // Match your button color
+    },
+      
 });
 
 export { styles }

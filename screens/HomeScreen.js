@@ -7,10 +7,12 @@ import { styles } from '../stylesheet/Style';
 //export default FlatListBasics;
 
 export default function HomeScreen({ navigation }) {
+    //var patientData = require('../patientdata/patientDataStructure')
+    //console.log(patientData); <Text>{patientData.getName}</Text>
     return (
       <View style={styles.container}>
         <StatusBar style="auto" />
-
+        
         {/* NAV BUTTONS */}
         {/* New Session */}
         <TouchableOpacity style={styles.navButton} 
