@@ -22,6 +22,59 @@ class PatientData {
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+
+
+
+  //patientData[patients[patientName: "", sessions[sessionDateTime: "", exercises[exercise: "", repetitions: 0]]]];
+/*
+  const patientData = [
+    {
+      patientName: "",
+      sessions: [
+        {
+          sessionDateTime: '',
+          exercises: [
+            {
+              exerciseName: '',
+              repetitions: 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+  const saveDataToStorage = async (key, data) => {
+    try {
+      const jsonData = JSON.stringify(data);
+      await AsyncStorage.setItem(key, jsonData);
+      console.log(`${key} saved to AsyncStorage.`);
+    } catch (error) {
+      console.error(`Error saving ${key} to AsyncStorage:`, error);
+    }
+  };
+  
+  // Load data from AsyncStorage
+  const loadDataFromStorage = async (key) => {
+    try {
+      const jsonData = await AsyncStorage.getItem(key);
+      if (jsonData !== null) {
+        const data = JSON.parse(jsonData);
+        console.log(`${key} loaded from AsyncStorage:`, data);
+        return data;
+      } else {
+        console.log(`No ${key} found in AsyncStorage.`);
+        return null;
+      }
+    } catch (error) {
+      console.error(`Error loading ${key} from AsyncStorage:`, error);
+      return null;
+    }
+  };
+
+  export { patientData, saveDataToStorage, loadDataFromStorage };
+
+*/
+
 class PatientData {
   constructor() {
     this.patients = [];
@@ -35,10 +88,12 @@ class PatientData {
     // You may want to call saveToStorage here to persist the changes
   }
 
+  /*
   async saveToStorage() {
     try {
       const data = JSON.stringify(this);
       await AsyncStorage.setItem('patientData', data);
+      console.log("saved");
     } catch (error) {
       // Handle error
       console.error('Error saving patient data to AsyncStorage:', error);
@@ -48,30 +103,30 @@ class PatientData {
   static async loadFromStorage() {
     try {
       const data = await AsyncStorage.getItem('patientData');
+  
       if (data) {
         const parsedData = JSON.parse(data);
         const patientData = new PatientData();
-
-        // Initialize the patientData object with the loaded data...
+  
         if (parsedData.patients) {
-          patientData.patients = parsedData.patients.map((patient) => {
+          for (const patient of parsedData.patients) {
             const loadedPatient = new Patient(patient.patientName);
             if (patient.sessions) {
-              loadedPatient.sessions = patient.sessions.map((session) => {
+              for (const session of patient.sessions) {
                 const loadedSession = new Session(session.sessionDateTime);
                 if (session.exercises) {
-                  loadedSession.exercises = session.exercises.map((exercise) => {
-                    return new Exercise(exercise.exerciseName, exercise.repetitions);
-                  });
+                  for (const exercise of session.exercises) {
+                    loadedSession.addExercise(exercise.exerciseName, exercise.repetitions);
+                  }
                 }
                 if (session.videos) {
                   loadedSession.videos = session.videos;
                 }
-                return loadedSession;
-              });
+                loadedPatient.sessions.push(loadedSession);
+              }
             }
-            return loadedPatient;
-          });
+            patientData.patients.push(loadedPatient);
+          }
         }
         return patientData;
       }
@@ -79,10 +134,12 @@ class PatientData {
       // Handle error
       console.error('Error loading patient data from AsyncStorage:', error);
     }
-
+  
     // If there's no data or an error occurred, return a new instance
     return new PatientData();
   }
+  */
+  
 }
 
 
@@ -124,5 +181,5 @@ class Exercise {
   // Add getters and setters here if needed
 }
 
-export default PatientData;
+export {PatientData, Patient, Session, Exercise};
 

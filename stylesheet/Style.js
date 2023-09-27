@@ -142,6 +142,29 @@ const styles = StyleSheet.create({
     buttonClose: {
         backgroundColor: '#DDDDDD', // Match your button color
     },
+
+    headerText: {
+        fontSize: 24, // Adjust the font size as needed
+        fontWeight: 'bold', // Adjust the font weight as needed
+        textAlign: 'center', // Center the text horizontally
+        marginTop: 10, // Add some top margin to separate it from other content
+      },
+
+    containerStyle: {
+        height: 40,
+        width: 200,
+        marginBottom: 20,
+    },
+    style: {
+        backgroundColor: '#ffffff',
+        borderColor: '#cccccc',
+        borderWidth: 1,
+        borderRadius: 5,
+        paddingHorizontal: 10,
+    },
+    itemStyle: {
+        justifyContent: 'flex-start',
+    },
       
 });
 

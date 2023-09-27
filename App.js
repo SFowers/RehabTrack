@@ -16,6 +16,7 @@ import PatientScreen from "./screens/PatientScreen";
 import SessionHistoryScreen from "./screens/SessionHistoryScreen";
 import DataExportScreen from "./screens/DataExportScreen";
 import GraphingScreen from "./screens/GraphingScreen";
+import SessionScreen from "./screens/SessionScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -57,6 +58,10 @@ export default function App() {
           name="Session History"
           component={SessionHistoryScreen}
           options={{ title: "Session History" }}
+        /><Stack.Screen
+          name="Session"
+          component={SessionScreen}
+          options={{ title: "Session" }}
         /> 
         <Stack.Screen
           name="Graphing"
