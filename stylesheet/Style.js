@@ -165,6 +165,47 @@ const styles = StyleSheet.create({
     itemStyle: {
         justifyContent: 'flex-start',
     },
+
+    disabledButton: {
+        backgroundColor: '#ccc', // Background color for disabled button
+        borderRadius: 8, // Border radius
+        paddingVertical: 10, // Vertical padding
+        paddingHorizontal: 20, // Horizontal padding
+        alignItems: 'center', // Center content horizontally
+        justifyContent: 'center', // Center content vertically
+        opacity: 0.5, // Reduced opacity for disabled state
+    },
+
+    exerciseList: {
+        marginTop: 20,
+    },
+    
+    exerciseItem: {
+        backgroundColor: '#f0f0f0',
+        borderRadius: 8,
+        padding: 16,
+        marginBottom: 12,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    
+    exerciseText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#333',
+    },
+    
+    exerciseCount: {
+        fontSize: 16,
+        color: '#777',
+    },
+    
+    noExerciseText: {
+        fontSize: 16,
+        color: '#777',
+        textAlign: 'center',
+    },
       
 });
 
