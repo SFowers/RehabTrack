@@ -3,26 +3,30 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#f8f9fa',
         justifyContent: 'flex-start',
         rowGap: 15,
-        padding: 10,
+        padding: 20,
     },
     titleText: {
-        fontSize: 24,
+        fontSize: 20,
         fontWeight: 'bold',
+        color: '#495057',
+        marginBottom: 10,
     },
     navButton: {
         alignItems: 'center',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        backgroundColor: '#DDDDDD',
+        backgroundColor: '#0275d8',
         padding: 10,
-        borderRadius: 7,
+        borderRadius: 5,
+        marginTop: 10,
         borderColor: 'black',
         textAlign: 'center',
     },
     buttonText: {
+        color: 'white',
         fontSize: 16,
         fontWeight: 'bold',
     },
@@ -40,12 +44,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-evenly',
         flexGrow: 1,
-        backgroundColor: '#DDDDDD',
+        backgroundColor: '#ced4da',
         padding: 10,
-        
         borderRadius: 7,
         borderColor: 'black',
         textAlign: 'center',
+        marginHorizontal: 5,
     },
     repContainer: {
         backgroundColor: '#fff',
@@ -109,7 +113,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-      },
+    },
     modalContent: {
         width: '80%', // Adjust the width as needed
         backgroundColor: '#fff',
@@ -148,7 +152,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold', // Adjust the font weight as needed
         textAlign: 'center', // Center the text horizontally
         marginTop: 10, // Add some top margin to separate it from other content
-      },
+    },
 
     containerStyle: {
         height: 40,
@@ -165,7 +169,58 @@ const styles = StyleSheet.create({
     itemStyle: {
         justifyContent: 'flex-start',
     },
-      
+
+    disabledButton: {
+        backgroundColor: '#ccc', // Background color for disabled button
+        borderRadius: 8, // Border radius
+        paddingVertical: 10, // Vertical padding
+        paddingHorizontal: 20, // Horizontal padding
+        alignItems: 'center', // Center content horizontally
+        justifyContent: 'center', // Center content vertically
+        opacity: 0.5, // Reduced opacity for disabled state
+    },
+
+    exerciseList: {
+        marginTop: 20,
+    },
+
+    exerciseItem: {
+        backgroundColor: '#f0f0f0',
+        borderRadius: 8,
+        padding: 16,
+        marginBottom: 12,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+
+    exerciseText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#333',
+    },
+
+    exerciseCount: {
+        fontSize: 16,
+        color: '#777',
+    },
+
+    noExerciseText: {
+        fontSize: 16,
+        color: '#777',
+        textAlign: 'center',
+    },
+    exportSection: {
+        backgroundColor: 'white',
+        padding: 20,
+        borderRadius: 5,
+        marginBottom: 20,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+    },
+
 });
 
 export { styles }

@@ -1,157 +1,297 @@
-import React, { useState } from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { Text, View, TouchableOpacity } from 'react-native';
-import { styles } from '../stylesheet/Style';
-import Icon from 'react-native-vector-icons/AntDesign';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import * as FileSystem from 'expo-file-system';
-import Papa from 'papaparse';
- 
+
+import React, { useState, useEffect } from "react";
+import { StatusBar } from "expo-status-bar";
+import { Text, View, TouchableOpacity } from "react-native";
+import { styles } from "../stylesheet/Style";
+import Icon from "react-native-vector-icons/AntDesign";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import * as FileSystem from "expo-file-system";
+import Papa from "papaparse";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  PatientData,
+  Patient,
+  Session,
+  Exercise,
+} from "../patientdata/patientDataStructures";
+
 export default function DataExportScreen({ navigation, route }) {
-  // let patientRecords = route.params.patientRecords;
+  const loadPatientData = async () => {
+    try {
+      const storedPatientData = await AsyncStorage.getItem(key);
+      const parsedPatientData = JSON.parse(storedPatientData);
+      setPatientRecords(parsedPatientData);
+      console.log("attempting load");
+    } catch (error) {
+      console.error("Error loading patient data from AsyncStorage:", error);
+    }
+  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await AsyncStorage.getItem("Patient Data");
+        if (data) {
+          const jsonData = JSON.parse(data);
+          if (jsonData && jsonData.patients && jsonData.patients.length > 0) {
+            setPatientRecords(jsonData);
+          } else {
+            console.error("jsonData is null or does not have patients");
+          }
+        } else {
+          console.error("Data is null");
+        }
+      } catch (error) {
+        console.error("Error loading patient data", error);
+      } finally {
+        setLoading(false); // Ensure loading is set to false
+      }
+    };
+    // Load patient data when the component mounts
+    fetchData();
+  }, []);
+
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState([
-    { label: 'patient1', value: 'patient 1' },
-    { label: 'patient2', value: 'patient 2' }
+    { label: "patient1", value: "patient 1" },
+    { label: "patient2", value: "patient 2" },
   ]);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+  const key = "Patient Data";
+  const [patientRecords, setPatientRecords] = useState([]);
 
   const onStartDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || startDate;
     setShowStartDatePicker(false);
     setStartDate(currentDate);
   };
- 
+
   const onEndDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || endDate;
     setShowEndDatePicker(false);
     setEndDate(currentDate);
   };
- 
+
   // Define the path to save the CSV file
   const getPath = (name) => `${FileSystem.documentDirectory}${name}.csv`;
- 
-  const exportAllData = async (patientRecords) => {
+
+  // Check if patientRecords is null or undefined before proceeding
+  if (!patientRecords) {
+    console.error("patientRecords is undefined or null");
+    return (
+      <View>
+        <Text>Error: Patient records not found</Text>
+      </View>
+    );
+  }
+
+  const [isExporting, setIsExporting] = useState(false);
+
+  const exportAllData = async () => {
+    setIsExporting(true);
     let csvData = [];
- 
-    patientRecords.patientsList.forEach(patient => {
-      patient.sessionsList.forEach(session => {
-        session.exercisesList.forEach(exercise => {
-          csvData.push({
-            'Patient Name': patient.name,
-            'Session Date': session.dateTime,
-            'Exercise Name': exercise.name,
-            'Repetitions': exercise.reps
-          });
+
+    patientRecords.patients.forEach((patient) => {
+      console.log(patient);
+      csvData.push(patient); //extra
+      if (patient.sessions) {
+        // Add this check here
+        patient.sessions.forEach((session) => {
+          if (session.exercises) {
+            // And also check if exercises is defined before calling forEach
+            session.exercises.forEach((exercise) => {
+              csvData.push({
+                "Patient Name": patient.patientName,
+                "Session Date": session.sessionDateTime,
+                "Exercise Name": exercise.exerciseName,
+                "Repetitions": exercise.repetitions,
+              });
+            });
+          }
         });
-      });
+      } else {
+        console.log("Sessions not found for patient:", patient.patientName);
+      }
     });
- 
+
     let csv = Papa.unparse(csvData);
     try {
       await FileSystem.writeAsStringAsync(getPath("exported_data"), csv);
-      console.log('Data exported successfully.');
+      console.log("Data exported successfully.");
     } catch (error) {
-      console.error('Error exporting data:', error);
+      console.error("Error exporting data:", error);
     }
   };
- 
+
   const exportRangeData = async (patientRecords, startDate, endDate) => {
+    if (!patientRecords) {
+      console.error("patientRecords is not defined");
+      return;
+    }
     let csvData = [];
- 
-    patientRecords.patientsList.forEach(patient => {
-      patient.sessionsList.forEach(session => {
-        const sessionDate = new Date(session.dateTime);
-        if (sessionDate >= startDate && sessionDate <= endDate) {
-          session.exercisesList.forEach(exercise => {
-            csvData.push({
-              'Patient Name': patient.name,
-              'Session Date': session.dateTime,
-              'Exercise Name': exercise.name,
-              'Repetitions': exercise.reps
-            });
-          });
-        }
-      });
+
+    patientRecords.patients.forEach((patient) => {
+      if (patient.sessions) {
+        // Add this check here
+        patient.sessions.forEach((session) => {
+          const sessionDate = new Date(session.sessionDateTime);
+          if (sessionDate >= startDate && sessionDate <= endDate) {
+            if (session.exercises) {
+              // And also check if exercises is defined before calling forEach
+              session.exercises.forEach((exercise) => {
+                csvData.push({
+                  "Patient Name": patient.patientName,
+                  "Session Date": session.sessionDateTime,
+                  "Exercise Name": exercise.exerciseName,
+                  "Repetitions": exercise.repetitions,
+                });
+              });
+            }
+          }
+        });
+      }
     });
 
     let csv = Papa.unparse(csvData);
     try {
       await FileSystem.writeAsStringAsync(getPath("exported_range_data"), csv);
-      console.log('Range data exported successfully.');
+      console.log("Range data exported successfully.");
     } catch (error) {
-      console.error('Error exporting range data:', error);
+      console.error("Error exporting range data:", error);
     }
   };
- 
+
   const exportPatientData = async (patientRecords, patientName) => {
     let csvData = [];
- 
-    const patient = patientRecords.patientsList.find(p => p.name === patientName);
+
+    const patient = patientRecords.patients.find(
+      (p) => p.patientName === patientName
+    );
     if (patient) {
-      patient.sessionsList.forEach(session => {
-        session.exercisesList.forEach(exercise => {
+      patient.sessions.forEach((session) => {
+        session.exercises.forEach((exercise) => {
           csvData.push({
-            'Patient Name': patient.name,
-            'Session Date': session.dateTime,
-            'Exercise Name': exercise.name,
-            'Repetitions': exercise.reps
+            "Patient Name": patient.patientName,
+            "Session Date": session.sessionDateTime,
+            "Exercise Name": exercise.exerciseName,
+            "Repetitions": exercise.repetitions,
           });
         });
       });
     }
- 
+
     let csv = Papa.unparse(csvData);
     try {
-      await FileSystem.writeAsStringAsync(getPath(`exported_patient_data_${patientName}`), csv);
+      await FileSystem.writeAsStringAsync(
+        getPath(`exported_patient_data_${patientName}`),
+        csv
+      );
       console.log(`Data for ${patientName} exported successfully.`);
     } catch (error) {
       console.error(`Error exporting ${patientName}'s data:`, error);
     }
   };
- 
+
   return (
-    <View style={styles.infoContainer}>
-      <View style={styles.infoItem}>
-        <Text>Export all data between date range</Text>
-        <Icon name="export" size={30} />
-      </View>
-      <View style={styles.infoItem}>
-        <TouchableOpacity style={styles.infoItemButton} onPress={() => setShowStartDatePicker(true)}>
-          <Text>{startDate.toLocaleDateString()}</Text>
+    <View style={styles.container}>
+      {/* Export All Data */}
+      <View style={styles.exportSection}>
+        <Text style={styles.titleText}>Export All Data</Text>
+        <Text>This button will export all patient data to a CSV file.</Text>
+        <TouchableOpacity onPress={exportAllData} style={styles.navButton}>
+          <Text style={styles.buttonText}>Export All</Text>
         </TouchableOpacity>
+      </View>
+
+      {/* Export Range Data */}
+      <View style={styles.exportSection}>
+        <Text style={styles.titleText}>Export Range Data</Text>
+        <Text>
+          Select a date range to export the patient data within those dates.
+        </Text>
+
+        {/* Date Selection */}
+        <View style={styles.selectionContainer}>
+          <TouchableOpacity
+            style={styles.selectorButton}
+            onPress={() => setShowStartDatePicker(true)}
+          >
+            <Text style={styles.buttonText}>
+              {startDate.toLocaleDateString()}
+            </Text>
+          </TouchableOpacity>
+
+          <Text style={styles.titleText}>To</Text>
+
+          <TouchableOpacity
+            style={styles.selectorButton}
+            onPress={() => setShowEndDatePicker(true)}
+          >
+            <Text style={styles.buttonText}>
+              {endDate.toLocaleDateString()}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Date Pickers */}
         {showStartDatePicker && (
           <DateTimePicker
             testID="startDatePicker"
             value={startDate}
-            mode={'date'}
+            mode="date"
             is24Hour={true}
             display="default"
-            onChange={onStartDateChange}
+            onChange={(event, selectedDate) => {
+              setShowStartDatePicker(false);
+              if (selectedDate) {
+                setStartDate(selectedDate);
+              }
+            }}
           />
         )}
-        <Text>{"\n"}To</Text>
-        <TouchableOpacity style={styles.infoItemButton} onPress={() => setShowEndDatePicker(true)}>
-          <Text>{endDate.toLocaleDateString()}</Text>
-        </TouchableOpacity>
         {showEndDatePicker && (
           <DateTimePicker
             testID="endDatePicker"
             value={endDate}
-            mode={'date'}
+            mode="date"
             is24Hour={true}
             display="default"
-            onChange={onEndDateChange}
+            onChange={(event, selectedDate) => {
+              setShowEndDatePicker(false);
+              if (selectedDate) {
+                setEndDate(selectedDate);
+              }
+            }}
           />
         )}
-        <TouchableOpacity onPress={() => exportRangeData(patientRecords, startDate, endDate)}>
-          <Text>Export Range</Text>
+        {/* Export Button */}
+        <TouchableOpacity
+          onPress={() => exportRangeData(patientRecords, startDate, endDate)}
+          style={styles.navButton}
+        >
+          <Text style={styles.buttonText}>Export Range</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Export Specific Patient Data */}
+      <View style={styles.exportSection}>
+        <Text style={styles.titleText}>Export Specific Patient Data</Text>
+        <Text>Select a patient to export their specific data.</Text>
+        {/* Add patient selection and export button */}
+        <TouchableOpacity
+          onPress={() =>
+            exportPatientData(patientRecords, "SpecificPatientName")
+          }
+          style={styles.navButton}
+        >
+          <Text style={styles.buttonText}>Export Patient Data</Text>
+        </TouchableOpacity>
+      </View>
+
+      <StatusBar style="auto" />
     </View>
-  )
+  );
 }
