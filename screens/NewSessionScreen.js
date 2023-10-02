@@ -54,8 +54,12 @@ export default function NewSessionScreen() {
       const newSession = new Session(currentDateTime);
       selectedPatient.sessions.push(newSession);
       
+      setSessions(selectedPatient.sessions.map((session) => ({
+        label: new Date(session.sessionDateTime).toLocaleString(),
+        value: session.sessionDateTime
+      })));
       // Set the newly added session as the selected session
-      setSelectedSession(newSession.sessionDateTime);
+      setSelectedSession(newSession);
       
       // Close the session modal
       setSessionModalVisible(false);
@@ -85,14 +89,6 @@ export default function NewSessionScreen() {
       console.log("No patient assigned");
     }
   };
-
-  const selectSession = () => {
-    if(selectedPatient) {
-      toggleSessionModal();
-    } else {
-      console.log("No patient assigned");
-    }
-  }
 
   // Function to save the session with selected exercises
   const saveSession = async () => {
@@ -126,7 +122,7 @@ export default function NewSessionScreen() {
     if (foundPatient) {
       setSelectedPatient(foundPatient);
       setSessions(foundPatient.sessions.map((session) => ({
-        label: session.sessionDateTime,
+        label: new Date(session.sessionDateTime).toLocaleString(),
         value: session.sessionDateTime
       })));
     } else {
@@ -234,7 +230,7 @@ export default function NewSessionScreen() {
 
       <Text style={styles.headerText}>{selectedPatient.patientName}</Text>
       <Text style={styles.headerText}>
-        {selectedSession ? selectedSession.sessionDateTime : "No session selected"}
+        {selectedSession ? new Date(selectedSession.sessionDateTime).toLocaleString() : "No session selected"}
       </Text>
 
 
@@ -315,10 +311,7 @@ export default function NewSessionScreen() {
             {/* Add an option to add a new session */}
             <TouchableOpacity
               style={styles.button}
-              onPress={() => {
-                // Implement adding a new session here
-                // You can open another modal or navigate to a new screen for adding a session
-              }}
+              onPress={addSession}
             >
               <Text style={styles.textStyle}>Add New Session</Text>
             </TouchableOpacity>

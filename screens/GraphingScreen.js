@@ -1,192 +1,89 @@
-import React, { useState, useEffect } from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { Dimensions, Text, View, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, ActivityIndicator, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { styles } from '../stylesheet/Style';
-import Icon from 'react-native-vector-icons/AntDesign';
-import { LineChart } from 'react-native-chart-kit';
+import { LineChart } from 'react-native-svg-charts';
 
-export default function GraphingScreen({ navigation }) {
- const [startDate, setStartDate] = useState(new Date());
- const [endDate, setEndDate] = useState(new Date());
- const [showStartDatePicker, setShowStartDatePicker] = useState(false);
- const [showEndDatePicker, setShowEndDatePicker] = useState(false);
- const [selectedExercises, setSelectedExercises] = useState([]);
- const [summaryType, setSummaryType] = useState('monthly'); // or 'weekly'
+export default function GraphingScreen( {navigation, route} ) {
+  let patientName = route?.params?.patientName || "";
+  const [patientData, setPatientData] = useState(null);
+  const [selectedPatient, setSelectedPatient] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [chartData, setChartData] = useState([]);
 
- // Initialized data structure properly
- const [data, setData] = useState({
-   labels: [],
-   datasets: [{
-     data: [],
-     strokeWidth: 2
-   }]
- });
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await AsyncStorage.getItem('Patient Data');
+        if (data) {
+          const parsedData = JSON.parse(data);
+          if (parsedData && parsedData.patients) {
+            setPatientData(parsedData.patients);
+            const foundPatient = parsedData.patients.find(
+              (patient) => patient.patientName === patientName
+            );
+            setSelectedPatient(foundPatient);
+            
+            // Process and map patient session data to chart data here
+            const data = foundPatient.sessions.map(session => 
+              session.reduce((acc, exercise) => acc + exercise.repetitions, 0));
+            setChartData(data);
+            setLoading(false);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading patient data:', error);
+        Alert.alert('Error', 'Failed to load patient data.');
+        setLoading(false);
+      }
+    };
+  
+    fetchData();
+  }, [patientName]);
+  
+  //console.log('Patient Data:', patientData);
+  //console.log('Selected Patient:', selectedPatient);
+  console.log(chartData);
 
- const toggleExercise = (exercise) => {
-   if (selectedExercises.includes(exercise)) {
-     setSelectedExercises(prev => prev.filter(e => e !== exercise));
-   } else {
-     setSelectedExercises(prev => [...prev, exercise]);
-   }
- };
+  
+  
+  // chartData now contains an array of data points representing total repetitions for each session
+  
 
- useEffect(() => {
-   const fetchData = async () => {
-     try {
-       const rawData = await AsyncStorage.getItem('exerciseData');
-       if (!rawData) return;
-
-       const exerciseData = JSON.parse(rawData);
-       if (!exerciseData || !Array.isArray(exerciseData)) return;
-
-       // 1. Filter by selected exercises
-       let filteredExercises = exerciseData.filter(exercise => selectedExercises.includes(exercise.name));
-
-       // 2. Filter each exercise's data by the date range
-       let filteredData = [];
-       filteredExercises.forEach(exercise => {
-         exercise.data = exercise.data.filter(entry => entry.timeDate >= startDate && entry.timeDate <= endDate);
-         filteredData.push(...exercise.data);
-       });
-
-       // 3. Aggregate based on the summaryType
-       let aggregatedData = {};
-
-       filteredData.forEach(entry => {
-         const month = entry.timeDate.getMonth();
-         const week = Math.floor(entry.timeDate.getDate() / 7);
-
-         const key = summaryType === 'monthly' ? `Month-${month}` : `Week-${week}`;
-         aggregatedData[key] = (aggregatedData[key] || 0) + entry.reps;
-       });
-
-       const labels = Object.keys(aggregatedData);
-       const values = Object.values(aggregatedData);
-
-       setData({
-         labels: labels,
-         datasets: [{
-           data: values,
-           strokeWidth: 2
-         }]
-       });
-
-     } catch (error) {
-       console.error("Error fetching data: ", error);
-     }
-   };
-
-   fetchData();
- }, [startDate, endDate, selectedExercises, summaryType]);
-
- const screenWidth = Dimensions.get("window").width;
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#0000ff" />
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
-  <View style={styles.container}>
-    <StatusBar style="auto" />
     <View style={styles.container}>
+      {chartData.length > 0 ? (
       <LineChart
-              data={data}
-              width={screenWidth - 32}
-              height={220}
-              chartConfig={{
-                backgroundColor: "#fff",
-                backgroundGradientFrom: "#fff",
-                backgroundGradientTo: "#fff",
-                decimalPlaces: 0,
-                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                style: {
-                  borderRadius: 16
-                },
-                propsForDots: {
-                  r: "6",
-                  strokeWidth: "2"
-                }
-              }}
-              bezier
-              style={{
-                marginVertical: 8,
-                borderRadius: 16
-              }}
-            />
+        style={{ height: 200 }}
+        data={chartData}
+        svg={{ stroke: 'rgb(134, 65, 244)' }}
+        contentInset={{ top: 20, bottom: 20 }}
+      />
+    
+      ) : (
+        <Text>No exercise data available for this patient.</Text>
+      )}
     </View>
-
-        {/* DATE SELECTION FOR GRAPH */}
-    <Text style={styles.titleText}>Date Range</Text>
-    <View style={styles.infoContainer}>
-      <View style={styles.infoItem}>
-        <TouchableOpacity style={styles.infoItemButton} onPress={() => setShowStartDatePicker(true)}>
-        <Text>{startDate.toLocaleDateString()}</Text>
-        </TouchableOpacity>
-                {showStartDatePicker && (
-        <DateTimePicker
-                    value={startDate}
-                    onChange={(event, date) => {
-                      setShowStartDatePicker(false);
-                      if (date) setStartDate(date);
-                    }}
-                  />
-                )}
-        <Text>{"\n"}To</Text>
-        <TouchableOpacity style={styles.infoItemButton} onPress={() => setShowEndDatePicker(true)}>
-        <Text>{endDate.toLocaleDateString()}</Text>
-        </TouchableOpacity>
-                {showEndDatePicker && (
-        <DateTimePicker
-                    value={endDate}
-                    onChange={(event, date) => {
-                      setShowEndDatePicker(false);
-                      if (date) setEndDate(date);
-                    }}
-                  />
-                )}
-      </View>
-    </View>
-
-        {/* WEEKLY/MONTHLY SUMMARY FOR GRAPH */}
-    <View style={styles.selectionContainer}>
-      <TouchableOpacity style={styles.selectorButton} onPress={() => setSummaryType('weekly')}>
-        <Text style={styles.buttonText}>Weekly Summary</Text>
-        <Icon name="calendar" size={30} />
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.selectorButton} onPress={() => setSummaryType('monthly')}>
-        <Text style={styles.buttonText}>Monthly Summary</Text>
-        <Icon name="calendar" size={30} />
-      </TouchableOpacity>
-    </View>
-
-    <Text style={styles.titleText}>Graph Legends</Text>
-    <View style={styles.selectionContainer}>
-      <TouchableOpacity
-              style={styles.selectorButton}
-              onPress={() => toggleExercise('Hand Waves')}
-      >
-        <Text style={styles.buttonText}>Hand Waves</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-              style={styles.selectorButton}
-              onPress={() => toggleExercise('Across Table')}
-      >
-        <Text style={styles.buttonText}>Across Table</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-              style={styles.selectorButton}
-              onPress={() => toggleExercise('Raise Arm')}
-      >
-        <Text style={styles.buttonText}>Raise Arm</Text>
-      </TouchableOpacity>
-    </View>
-
-        {/* Redirect to compare against the normative screen */}
-    <View style={styles.selectionContainer}>
-      <TouchableOpacity style={styles.selectorButton} onPress={() => navigation.navigate('NormativeComparisonScreen')}>
-        <Text style={styles.buttonText}>Compare against the normative</Text>
-        <Icon name="right" size={30} />
-      </TouchableOpacity>
-    </View>
-  </View>
- );
+  );
 }
+
+
+const exerciseData = [
+  [{ exerciseName: 'Exercise 1', repetitions: 10 }],
+  [{ exerciseName: 'Exercise 2', repetitions: 5 }],
+  // Add more exercise data here...
+];
+
+// Transform exercise data into an array of data points
+const chartDataTest = exerciseData.map((session) =>
+  session.reduce((acc, exercise) => acc + exercise.repetitions, 0)
+);

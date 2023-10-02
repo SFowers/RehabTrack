@@ -16,6 +16,10 @@ export default function PatientScreen() {
     navigation.navigate('Session History', { patientName });
   };
 
+  const navigateToGraphing = () => {
+    navigation.navigate('Graphing', { patientName });
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
@@ -32,7 +36,7 @@ export default function PatientScreen() {
 
       <TouchableOpacity
         style={styles.navButton}
-        onPress={() => navigation.navigate('Graphing')}
+        onPress={navigateToGraphing}
       >
         <Text style={styles.navText}>Progress Graph</Text>
         <Icon name="right" size={30} />
