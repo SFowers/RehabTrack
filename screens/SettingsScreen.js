@@ -30,14 +30,23 @@ export default function SettingsScreen({ navigation }) {
       const patient1 = new Patient('Patient 1');
       const session1 = new Session('2023-09-20T10:00:00');
       session1.addExercise('Exercise 1', 10);
+      session1.addExercise('Exercise 1', 12);
+      session1.addExercise('Exercise 1', 15);
+      session1.addExercise('Exercise 1', 12);
       patient1.sessions.push(session1);
       patientData.patients.push(patient1);
       //Dummy Patient 2
       const patient2 = new Patient('Patient 2');
       const session2 = new Session('2023-09-21T14:30:00');
+      const session4 = new Session('2023-08-13T14:30:00')
       session2.addExercise('Exercise 2', 8);
       session2.addExercise('Arm Stretch', 3);
+      session2.addExercise('Arm Stretch', 6);
+      session4.addExercise('Exercise 2', 12);
+      session4.addExercise('Arm Stretch', 5)
+      session4.addExercise('Arm Stretch', 8)
       patient2.sessions.push(session2);
+      patient2.sessions.push(session4);
       patientData.patients.push(patient2);
       // Dummy Patient 3
       const patient3 = new Patient('Patient 3');

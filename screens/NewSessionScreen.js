@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PatientData, Patient, Session, Exercise } from '../patientdata/patientDataStructures';
 import DropDownPicker from 'react-native-dropdown-picker';
 import RepetitionsScreen from './RepetitionsScreen';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function NewSessionScreen() {
   const [open, setOpen] = useState(false);
@@ -17,35 +18,106 @@ export default function NewSessionScreen() {
   const [exercises, setExercises] = useState([]); // State to store exercises
   const [selectedPatient, setSelectedPatient] = useState('');
   const [selectedSession, setSelectedSession] = useState(null);
+  const [selectedExercise, setSelectedExercise] = useState(null);
   const [sessionModalVisible, setSessionModalVisible] = useState(false); // State for the session modal
   const [sessions, setSessions] = useState([]);
-  const [exerciseModalVisible, setExerciseModalVisible] = useState(false);
+  const [openS, setOpenS] = useState(false);
+  const [valueS, setValueS] = useState(null);
+  const [repetitionsModalVisible, setRepetitionsModalVisible] = useState(false);
 
-  const handleExerciseOpenModal = () => {
-    // Show the modal when exercise is selected
-    setIsModalVisible(true);
+  const openRepetitionsModal = () => {
+    if (selectedExercise) {
+      setRepetitionsModalVisible(true);
+    } else {
+      // Handle the case where no exercise is selected
+      console.log("No exercise selected");
+    }
   };
-  const handleExerciseCloseModal = () => {
-    // Close the modal
-    setExerciseModalVisible(false);
+  
+  // Function to close the RepetitionsScreen modal
+  const closeRepetitionsModal = () => {
+    setRepetitionsModalVisible(false);
   };
-  // Function to add exercises to the session state
+  // Function to add a new exercise to the selected session
   const addExercise = () => {
     if (selectedPatient && selectedSession) {
+      const exerciseID = uuidv4();
       // Sample exercise data (you should replace this with actual exercise data)
       const sampleExercise = {
-        name: 'New Exercise',
-        count: 0, // Change this to the actual count
+        id: exerciseID,
+        exerciseName: 'New Exercise',
+        repetitions: 0,
       };
 
-      setExercises([...exercises, sampleExercise]);
-      console.log(exercises);
+      // Add the new exercise to the selected session
+      selectedSession.exercises.push(sampleExercise);
+
+      // Update the patientData with the new exercise
+      const updatedPatientData = { ...patientData };
+      updatedPatientData.patients = updatedPatientData.patients.map((patient) => {
+        if (patient.patientName === selectedPatient.patientName) {
+          return selectedPatient; // Update the selected patient with the new session and exercise
+        }
+        return patient; // Keep other patients as they are
+      });
+
+      // Save the updated patient data to AsyncStorage
+      AsyncStorage.setItem('Patient Data', JSON.stringify(updatedPatientData))
+        .then(() => {
+          // Update the exercises state
+          setExercises([...selectedSession.exercises]);
+        })
+        .catch((error) => {
+          console.error('Error saving patient data:', error);
+        });
     } else {
-      // Handle the case where no patient or session has been assigned
       console.log("No patient or session assigned");
     }
   };
+  
+  // Inside your updateExercise function in NewSessionScreen.js
+  const updateExercise = (exerciseId, exerciseName, repetitions) => {
+    if (selectedPatient && selectedSession) {
+      // Find the exercise by ID in the selected session's exercises array
+      const updatedExercises = exercises.map((exercise) => {
+        if (exercise.id === exerciseId) {
+          return { ...exercise, exerciseName, repetitions }; // Update exerciseName and repetitions
+        }
+        return exercise;
+      });
+  
+      setExercises(updatedExercises);
+  
+      // Update the patientData with the updated exercise data
+      const updatedPatientData = { ...patientData };
+      updatedPatientData.patients = updatedPatientData.patients.map((patient) => {
+        if (patient.patientName === selectedPatient.patientName) {
+          const updatedSessions = patient.sessions.map((session) => {
+            if (session.sessionDateTime === selectedSession.sessionDateTime) {
+              const updatedSession = { ...session };
+              updatedSession.exercises = updatedExercises;
+              return updatedSession;
+            }
+            return session;
+          });
+          return { ...patient, sessions: updatedSessions };
+        }
+        return patient;
+      });
+  
+      // Save the updated patient data to AsyncStorage
+      AsyncStorage.setItem('Patient Data', JSON.stringify(updatedPatientData))
+        .then(() => {
+          // Data saved successfully
+          console.log('Exercise data updated and saved to AsyncStorage.');
+        })
+        .catch((error) => {
+          console.error('Error saving patient data:', error);
+        });
+    }
+  };
 
+  // Function to add a new session to the selected patient
   const addSession = () => {
     if (selectedPatient) {
       const currentDateTime = new Date().toISOString();
@@ -54,15 +126,27 @@ export default function NewSessionScreen() {
       const newSession = new Session(currentDateTime);
       selectedPatient.sessions.push(newSession);
       
-      setSessions(selectedPatient.sessions.map((session) => ({
-        label: new Date(session.sessionDateTime).toLocaleString(),
-        value: session.sessionDateTime
-      })));
-      // Set the newly added session as the selected session
-      setSelectedSession(newSession);
-      
-      // Close the session modal
-      setSessionModalVisible(false);
+      // Update the patientData with the new session
+      const updatedPatientData = { ...patientData };
+      updatedPatientData.patients = updatedPatientData.patients.map((patient) => {
+        if (patient.patientName === selectedPatient.patientName) {
+          return selectedPatient; // Update the selected patient with the new session
+        }
+        return patient; // Keep other patients as they are
+      });
+
+      // Save the updated patient data to AsyncStorage
+      AsyncStorage.setItem('Patient Data', JSON.stringify(updatedPatientData))
+        .then(() => {
+          // Set the newly added session as the selected session
+          setSelectedSession(newSession);
+          
+          // Close the session modal
+          setSessionModalVisible(false);
+        })
+        .catch((error) => {
+          console.error('Error saving patient data:', error);
+        });
     } else {
       console.log("No patient assigned");
     }
@@ -74,11 +158,15 @@ export default function NewSessionScreen() {
     const foundSession = selectedPatient.sessions.find((session) => session.sessionDateTime === sessionName);
     if (foundSession) {
       setSelectedSession(foundSession);
+
+      // Update the exercises state with the exercises of the selected session
+      setExercises([...foundSession.exercises]);
     } else {
       setSelectedSession(null); // Set to null if the session is not found
     }
     toggleSessionModal(); // Close the session modal
   };
+
 
 
   // Function to toggle the visibility of the session modal
@@ -240,16 +328,29 @@ export default function NewSessionScreen() {
             <TouchableOpacity
               key={index}
               style={styles.exerciseItem}
-              onPress={handleExerciseOpenModal}
+              onPress={() => {
+                setSelectedExercise(exercises[index]);
+                openRepetitionsModal(); // This function will open the modal conditionally
+              }}
             >
-              <Text style={styles.exerciseText}>{exercise.name}</Text>
-              <Text style={styles.exerciseCount}>{exercise.count}</Text>
+              <Text style={styles.exerciseText}>{exercise.exerciseName}</Text>
+              <Text style={styles.exerciseCount}>{exercise.repetitions}</Text>
             </TouchableOpacity>
-          ))
+          ))          
         ) : (
           <Text style={styles.noExerciseText}>No exercises added to this session</Text>
         )}
       </View>
+
+      <RepetitionsScreen
+        visible={repetitionsModalVisible}
+        onClose={closeRepetitionsModal}
+        onSave={(exerciseId, exerciseName, repetitions) => {
+          // Update exercise in NewSessionScreen's state and save to storage
+          updateExercise(exerciseId, exerciseName, repetitions);
+        }}
+        exercise={selectedExercise} // Pass the selected exercise to the modal
+      />
 
       <Modal
         animationType="slide"
@@ -293,35 +394,28 @@ export default function NewSessionScreen() {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            {/* Add a DropDownPicker to select a session */}
             <DropDownPicker
               placeholder='Select a Session or Add New'
               searchable={true}
               items={sessions}
-              open={open}
-              value={value}
-              setOpen={setOpen}
-              setValue={setValue}
+              open={openS}
+              value={valueS}
+              setOpen={setOpenS}
+              setValue={setValueS}
               setItems={setItems}
               onSelectItem={(item) => {
                 handleSessionSelection(item.value);
               }}
             />
-
-            {/* Add an option to add a new session */}
             <TouchableOpacity
               style={styles.button}
               onPress={addSession}
             >
               <Text style={styles.textStyle}>Add New Session</Text>
             </TouchableOpacity>
-
-            {/* Add exercise selection and input here */}
           </View>
         </View>
       </Modal>
-
-      
     </View>
   );
 }

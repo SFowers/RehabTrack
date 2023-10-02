@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 class PatientData {
   constructor() {
     this.patients = [];
@@ -10,6 +12,7 @@ class PatientData {
 
 class Patient {
   constructor(patientName) {
+    this.id = uuidv4();
     this.patientName = patientName;
     this.sessions = [];
   }
@@ -23,6 +26,7 @@ class Patient {
 
 class Session {
   constructor(sessionDateTime) {
+    this.id = uuidv4();
     this.sessionDateTime = sessionDateTime;
     this.exercises = [];
     this.videos = [];
@@ -38,6 +42,7 @@ class Exercise {
   constructor(exerciseName, repetitions) {
     this.exerciseName = exerciseName;
     this.repetitions = repetitions;
+    this.id = uuidv4();
   }
 }
 

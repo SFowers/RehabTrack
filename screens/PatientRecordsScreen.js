@@ -81,7 +81,7 @@ export default function PatientRecordsScreen() {
         <TouchableOpacity
           style={styles.selectorButton}
           onPress={() => {
-            setSelectedPatient(patientText);
+            
             setModalVisible(!modalVisible);
           }}
         >

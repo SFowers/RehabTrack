@@ -3,30 +3,29 @@ import { StatusBar } from 'expo-status-bar';
 import { Text, View, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { styles } from '../stylesheet/Style';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { PatientData, Patient, Session, Exercise } from '../patientdata/patientDataStructures';
 
 export default function SessionScreen() {
-  const navigation = useNavigation();
   const route = useRoute();
-  const { patientName, exerciseId } = route.params || {};
-  const [exercise, setExercise] = useState(null);
+  const { patientName } = route.params || {};
+  const [exercises, setExercises] = useState([]);
   const [sessionDateTime, setSessionDateTime] = useState('');
 
-  // Function to load exercise data for the selected exerciseId
+  // Function to load exercise data for the selected patient
   const loadExerciseData = async () => {
     try {
       const storedPatientData = await AsyncStorage.getItem("Patient Data");
       const patientData = JSON.parse(storedPatientData);
-      
+
       // Find the patient with the matching name
       const patient = patientData.patients.find(patient => patient.patientName === patientName);
 
-      if (patient && patient.sessions && exerciseId >= 0 && exerciseId < patient.sessions.length) {
-        const session = patient.sessions[exerciseId];
-        // Set the exercise data for the selected exerciseId
-        setExercise(session.exercises);
+      if (patient && patient.sessions.length > 0) {
+        // Let's assume we are loading exercises from the first session
+        const session = patient.sessions[0]; // Change this logic as needed
+        // Set the exercise data
+        setExercises(session.exercises);
 
         // Format the session date time
         setSessionDateTime(new Date(session.sessionDateTime).toLocaleString());
@@ -47,12 +46,12 @@ export default function SessionScreen() {
       <Text style={styles.headerText}>{patientName}'s Session</Text>
       <Text style={styles.headerText}>{sessionDateTime}</Text>
 
-      {/* Display the exercises and navigate to RepetitionsScreen */}
-      {exercise && exercise.map((exercise, index) => (
+      {/* Display the exercises */}
+      {exercises && exercises.map((exercise, index) => (
         <TouchableOpacity
           key={index}
           style={styles.navButton}
-          onPress={() => navigation.navigate('Repetitions', { exerciseName: exercise.exerciseName })} // Pass exerciseName to RepetitionsScreen
+           // Pass exerciseName to RepetitionsScreen
         >
           <Text style={styles.buttonText}>{exercise.exerciseName}</Text>
           <Text style={styles.buttonCount}>{exercise.repetitions}</Text>
@@ -62,6 +61,7 @@ export default function SessionScreen() {
     </View>
   );
 }
+
 
 
 
