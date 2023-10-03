@@ -161,7 +161,7 @@ export default function GraphingScreen({ navigation, route }) {
             }}
             style={{
               backgroundColor:
-                exerciseName === selectedExercise ? 'blue' : 'gray',
+                exerciseName === selectedExercise ? '#01afb0' : 'gray',
               padding: 10,
               margin: 5,
               borderRadius: 5,

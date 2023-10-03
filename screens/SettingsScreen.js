@@ -143,15 +143,16 @@ export default function SettingsScreen({ navigation }) {
       >
         <Text style={styles.buttonText}>Add Dummy Data</Text>
       </TouchableOpacity>
+      {/*
       <TouchableOpacity onPress={() => {checkdata()}}><Text>Check</Text></TouchableOpacity>
       <View>
-        <Text>Settings</Text>
-        {/* Display patientRecords data */}
+        <Text>Settings</Text> 
         <Text>Patient Records:</Text>
         <Text>{JSON.stringify(patientRecords, null, 2)}</Text>
         <Button title="Load Data" onPress={loadPatientData} />
       </View>
       <StatusBar style="auto" />
+      */}
     </View>
     
   );

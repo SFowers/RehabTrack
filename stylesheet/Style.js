@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        backgroundColor: '#0275d8',
+        backgroundColor: '#01afb0',
         padding: 10,
         borderRadius: 5,
         marginTop: 10,
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-evenly',
         flexGrow: 1,
-        backgroundColor: '#ced4da',
+        backgroundColor: 'gray',
         padding: 10,
         borderRadius: 7,
         borderColor: 'black',
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
         width: '100%', // Adjust the width as needed
     },
     button: {
-        backgroundColor: '#DDDDDD', // Match your button color
+        backgroundColor: 'gray', // Match your button color
         padding: 10,
         borderRadius: 7,
         alignItems: 'center',

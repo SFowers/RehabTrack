@@ -55,7 +55,7 @@ export default function SessionScreen() {
         >
           <Text style={styles.buttonText}>{exercise.exerciseName}</Text>
           <Text style={styles.buttonCount}>{exercise.repetitions}</Text>
-          <Icon name="edit" size={30} />
+          {/*<Icon name="edit" size={30} />*/}
         </TouchableOpacity>
       ))}
     </View>

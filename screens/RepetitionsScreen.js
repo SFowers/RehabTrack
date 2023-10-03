@@ -42,8 +42,11 @@ export default function RepetitionsScreen({ visible, onClose, onSave, exercise }
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items] = useState([
-    { label: 'exercise1', value: 'exercise 1' },
-    { label: 'exercise2', value: 'exercise 2' },
+    { label: 'Sit to Stand', value: 'Sit to Stand' },
+    { label: 'Right Arm Reach', value: 'Right Arm Reach' },
+    { label: 'Left Arm Reach', value: 'Left Arm Reach' },
+    { label: 'Right Steps', value: 'Right Steps' },
+    { label: 'Left Steps', value: 'Left Steps' }
   ]);
 
   return (
