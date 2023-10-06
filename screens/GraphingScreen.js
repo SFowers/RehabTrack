@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, Alert, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from '../stylesheet/Style';
-import { LineChart, Grid, YAxis, XAxis } from 'react-native-gifted-charts'; // Import LineChart, Grid, YAxis, and XAxis from 'react-native-gifted-charts'
+import { BarChart } from 'react-native-gifted-charts'; // Import BarChart from 'react-native-gifted-charts'
 
 export default function GraphingScreen({ navigation, route }) {
   let patientName = route?.params?.patientName || "";
@@ -30,31 +30,32 @@ export default function GraphingScreen({ navigation, route }) {
             const data = foundPatient.sessions.reduce((exerciseData, session) => {
               if (Array.isArray(session.exercises)) {
                 session.exercises.forEach((exercise) => {
-                  const { exerciseName, repetitions, sessionDateTime } = exercise;
+                  const { exerciseName, repetitions } = exercise;
                   if (!exerciseData[exerciseName]) {
-                    exerciseData[exerciseName] = {
-                      data: [], // Initialize an array if it doesn't exist
-                      dates: [], // Initialize an array for dates
-                    };
+                    exerciseData[exerciseName] = [];
                   }
-
-                  exerciseData[exerciseName].data.push(repetitions);
-                  exerciseData[exerciseName].dates.push(new Date(sessionDateTime)); // Store the date as a Date object
+                  const sessionDateTime = new Date(session.sessionDateTime);
+                  //const formattedDate = `${sessionDateTime.toLocaleDateString()} ${sessionDateTime.toLocaleTimeString()}`;
+                  const options1 = { day: 'numeric', month: 'numeric' };
+                  const formattedDate = sessionDateTime.toLocaleDateString('en-GB', options1);
+                  const options2 = { hour: '2-digit', minute: '2-digit'};
+                  const formattedTime = sessionDateTime.toLocaleTimeString(undefined, options2);
+                  exerciseData[exerciseName].push({ value: repetitions, label: formattedDate});
                 });
               } else {
-                console.warn('Session exercises are not an array:', session.exercises);
+                console.warn('Session exercises is not an array:', session.exercises);
               }
               return exerciseData;
             }, {});
+
             setChartData(data);
             setLoading(false);
 
             // Set the initial selected exercise and exercise dates
             if (Object.keys(data).length > 0) {
               setSelectedExercise(Object.keys(data)[0]);
-              setExerciseDates(data[Object.keys(data)[0]].dates || []);
+              setExerciseDates(data[Object.keys(data)[0]] || []);
             }
-            //console.log(exerciseDates);
           }
         }
       } catch (error) {
@@ -63,18 +64,9 @@ export default function GraphingScreen({ navigation, route }) {
         setLoading(false);
       }
     };
+
     fetchData();
   }, [patientName]);
-
-  // Function to generate a random color
-  const getRandomColor = () => {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-  };
 
   if (loading) {
     return (
@@ -86,59 +78,26 @@ export default function GraphingScreen({ navigation, route }) {
   }
 
   // Check if chartDataArray is defined before accessing it
-  const chartDataArray = chartData[selectedExercise]?.data || [];
-
-  // Check if exerciseDatesArray is defined before accessing it
-  const exerciseDatesArray = (chartData[selectedExercise]?.dates || []).filter(
-    (value) => value instanceof Date
-  );
-
-  const axesSvg = { fontSize: 10, fill: 'grey' };
-  const verticalContentInset = { top: 10, bottom: 10 };
-  const xAxisHeight = 30;
+  const chartDataArray = chartData[selectedExercise] || [];
 
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>{patientName} Charts</Text>
-      <View style={{ height: 200, padding: 20, flexDirection: 'row' }}>
-        <YAxis
+      <View style={{ maxheight: 300, maxwidth: 300,padding: 20 }}>
+        <BarChart
           data={chartDataArray}
-          style={{ marginBottom: xAxisHeight }}
-          contentInset={verticalContentInset}
-          svg={axesSvg}
+          frontColor={'#01afb0'}
         />
-        <View style={{ flex: 1, marginLeft: 10 }}>
-          <LineChart
-            style={{ flex: 1 }}
-            data={chartDataArray}
-            contentInset={verticalContentInset}
-            svg={{ stroke: 'rgb(134, 65, 244)' }}
-          >
-            <Grid />
-          </LineChart>
-          <XAxis
-            style={{ marginHorizontal: -10, height: xAxisHeight }}
-            data={exerciseDatesArray}
-            formatLabel={(value, index) => {
-              const date = exerciseDatesArray[index];
-              const month = date.getMonth() + 1;
-              const day = date.getDate();
-              return `${month.toString().padStart(2, '0')}/${day.toString().padStart(2, '0')}`; // Format as MM/DD
-            }}
-            contentInset={{ left: 10, right: 10 }}
-            svg={axesSvg}
-          />
-        </View>
       </View>
 
       {/* Custom exercise selection buttons */}
-      <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 50 }}>
         {Object.keys(chartData).map((exerciseName) => (
           <TouchableOpacity
             key={exerciseName}
             onPress={() => {
               setSelectedExercise(exerciseName);
-              setExerciseDates(chartData[exerciseName]?.dates || []);
+              setExerciseDates(chartData[exerciseName] || []);
             }}
             style={{
               backgroundColor:

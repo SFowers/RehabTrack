@@ -7,6 +7,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import * as FileSystem from "expo-file-system";
 import Papa from "papaparse";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import DropDownPicker from "react-native-dropdown-picker";
 import {
   PatientData,
   Patient,
@@ -33,6 +34,10 @@ export default function DataExportScreen({ navigation, route }) {
           const jsonData = JSON.parse(data);
           if (jsonData && jsonData.patients && jsonData.patients.length > 0) {
             setPatientRecords(jsonData);
+            setItems(jsonData.patients.map((patient) => ({
+              label: patient.patientName,
+              value: patient.patientName,
+            })));
           } else {
             console.error("jsonData is null or does not have patients");
           }
@@ -106,7 +111,7 @@ export default function DataExportScreen({ navigation, route }) {
                 "Patient Name": patient.patientName,
                 "Session Date": session.sessionDateTime,
                 "Exercise Name": exercise.exerciseName,
-                "Repetitions": exercise.repetitions,
+                Repetitions: exercise.repetitions,
               });
             });
           }
@@ -145,7 +150,7 @@ export default function DataExportScreen({ navigation, route }) {
                   "Patient Name": patient.patientName,
                   "Session Date": session.sessionDateTime,
                   "Exercise Name": exercise.exerciseName,
-                  "Repetitions": exercise.repetitions,
+                  Repetitions: exercise.repetitions,
                 });
               });
             }
@@ -176,7 +181,7 @@ export default function DataExportScreen({ navigation, route }) {
             "Patient Name": patient.patientName,
             "Session Date": session.sessionDateTime,
             "Exercise Name": exercise.exerciseName,
-            "Repetitions": exercise.repetitions,
+            Repetitions: exercise.repetitions,
           });
         });
       });
@@ -194,6 +199,18 @@ export default function DataExportScreen({ navigation, route }) {
     }
   };
 
+  const [selectedPatient, setSelectedPatient] = useState(null);
+
+  const handlePatientSelection = (selectedPatientName) => {
+    setSelectedPatient(selectedPatientName);
+  };
+
+  const patientItems =
+    patientRecords.patients?.map((patient) => ({
+      label: patient.patientName,
+      value: patient.patientName,
+    })) || [];
+
   return (
     <View style={styles.container}>
       {/* Export All Data */}
@@ -202,6 +219,35 @@ export default function DataExportScreen({ navigation, route }) {
         <Text>This button will export all patient data to a CSV file.</Text>
         <TouchableOpacity onPress={exportAllData} style={styles.navButton}>
           <Text style={styles.buttonText}>Export All</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Export Specific Patient Data */}
+      <View style={styles.exportSection}>
+        <Text style={styles.titleText}>Export Specific Patient Data</Text>
+        <Text>Select a patient to export their data.</Text>
+
+        {/* Dropdown for patient selection */}
+        <DropDownPicker
+          placeholder="Select or Search for a Patient"
+          open={open}
+          value={value}
+          items={items}
+          setOpen={setOpen}
+          setValue={setValue}
+          setItems={setItems}
+          onSelectItem={(item) => handlePatientSelection(item.value)}
+          searchable={true}
+          dropDownContainerStyle={{alignItems: 'center'}}
+        />
+
+        {/* Export Button */}
+        <TouchableOpacity
+          onPress={() => exportPatientData(patientRecords, selectedPatient)}
+          style={styles.navButton}
+          disabled={!selectedPatient} // Disable the button if no patient is selected
+        >
+          <Text style={styles.buttonText}>Export Patient Data</Text>
         </TouchableOpacity>
       </View>
 
@@ -275,20 +321,7 @@ export default function DataExportScreen({ navigation, route }) {
         </TouchableOpacity>
       </View>
 
-      {/* Export Specific Patient Data */}
-      <View style={styles.exportSection}>
-        <Text style={styles.titleText}>Export Specific Patient Data</Text>
-        <Text>Select a patient to export their specific data.</Text>
-        {/* Add patient selection and export button */}
-        <TouchableOpacity
-          onPress={() =>
-            exportPatientData(patientRecords, "SpecificPatientName")
-          }
-          style={styles.navButton}
-        >
-          <Text style={styles.buttonText}>Export Patient Data</Text>
-        </TouchableOpacity>
-      </View>
+      
 
       <StatusBar style="auto" />
     </View>
