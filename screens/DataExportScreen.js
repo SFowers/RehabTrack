@@ -42,7 +42,7 @@ export default function DataExportScreen({ navigation, route }) {
       } catch (error) {
         console.error("Error loading patient data", error);
       } finally {
-        setLoading(false); // Ensure loading is set to false
+        //setLoading(false); // Ensure loading is set to false
       }
     };
     // Load patient data when the component mounts

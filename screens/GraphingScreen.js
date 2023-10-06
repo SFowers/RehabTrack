@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, Alert, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from '../stylesheet/Style';
-import { LineChart, Grid, YAxis, XAxis } from 'react-native-svg-charts';
-import { Circle } from 'react-native-svg';
+import { LineChart, Grid, YAxis, XAxis } from 'react-native-gifted-charts'; // Import LineChart, Grid, YAxis, and XAxis from 'react-native-gifted-charts'
 
 export default function GraphingScreen({ navigation, route }) {
   let patientName = route?.params?.patientName || "";
@@ -31,22 +30,22 @@ export default function GraphingScreen({ navigation, route }) {
             const data = foundPatient.sessions.reduce((exerciseData, session) => {
               if (Array.isArray(session.exercises)) {
                 session.exercises.forEach((exercise) => {
-                  const { exerciseName, repetitions } = exercise;
+                  const { exerciseName, repetitions, sessionDateTime } = exercise;
                   if (!exerciseData[exerciseName]) {
                     exerciseData[exerciseName] = {
                       data: [], // Initialize an array if it doesn't exist
                       dates: [], // Initialize an array for dates
                     };
                   }
+
                   exerciseData[exerciseName].data.push(repetitions);
-                  exerciseData[exerciseName].dates.push(new Date(session.sessionDateTime)); // Store the date as a Date object
+                  exerciseData[exerciseName].dates.push(new Date(sessionDateTime)); // Store the date as a Date object
                 });
               } else {
-                console.warn('Session exercises is not an array:', session.exercises);
+                console.warn('Session exercises are not an array:', session.exercises);
               }
               return exerciseData;
             }, {});
-
             setChartData(data);
             setLoading(false);
 
@@ -64,7 +63,6 @@ export default function GraphingScreen({ navigation, route }) {
         setLoading(false);
       }
     };
-
     fetchData();
   }, [patientName]);
 
@@ -78,23 +76,6 @@ export default function GraphingScreen({ navigation, route }) {
     return color;
   };
 
-  const Dots = ({ x, y, data }) => {
-    return (
-      <>
-        {data?.map((value, index) => (
-          <Circle
-            key={index}
-            cx={x(index)}
-            cy={y(value)}
-            r={4}
-            stroke={'rgb(0, 0, 0)'}
-            fill={'white'}
-          />
-        ))}
-      </>
-    );
-  };
-
   if (loading) {
     return (
       <View style={styles.container}>
@@ -106,11 +87,12 @@ export default function GraphingScreen({ navigation, route }) {
 
   // Check if chartDataArray is defined before accessing it
   const chartDataArray = chartData[selectedExercise]?.data || [];
-  // Check if exerciseDates is defined before accessing it
+
+  // Check if exerciseDatesArray is defined before accessing it
   const exerciseDatesArray = (chartData[selectedExercise]?.dates || []).filter(
     (value) => value instanceof Date
   );
-  //console.log('Exercise Dates:', exerciseDatesArray);
+
   const axesSvg = { fontSize: 10, fill: 'grey' };
   const verticalContentInset = { top: 10, bottom: 10 };
   const xAxisHeight = 30;
@@ -133,7 +115,6 @@ export default function GraphingScreen({ navigation, route }) {
             svg={{ stroke: 'rgb(134, 65, 244)' }}
           >
             <Grid />
-            <Dots data={chartDataArray} />
           </LineChart>
           <XAxis
             style={{ marginHorizontal: -10, height: xAxisHeight }}
@@ -174,5 +155,3 @@ export default function GraphingScreen({ navigation, route }) {
     </View>
   );
 }
-
-
