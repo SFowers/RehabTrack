@@ -77,11 +77,11 @@ export default function PatientRecordsScreen() {
     <View style={styles.container}>
       <StatusBar style="auto" />
 
+      {/* Button to add a new patient */}
       <View style={styles.selectionContainer}>
         <TouchableOpacity
           style={styles.selectorButton}
           onPress={() => {
-            
             setModalVisible(!modalVisible);
           }}
         >
@@ -89,6 +89,8 @@ export default function PatientRecordsScreen() {
           <Icon name="plus" size={30} />
         </TouchableOpacity>
       </View>
+
+      {/* Dropdown for selecting or searching for a patient */}
       <View style={styles.selectionContainer}>
         <DropDownPicker
           placeholder='Select or Search for a Patient'
@@ -100,18 +102,19 @@ export default function PatientRecordsScreen() {
           setValue={setValue}
           setItems={setItems}
           onSelectItem={(item) => {
-            //console.log(item);
             handlePatientSelection(item.value);
           }}
         />
       </View>
 
+      {/* List of patients */}
       <FlatList
         data={patientData.patients}
         renderItem={renderItem}
         keyExtractor={(item) => item.patientName}
       />
 
+      {/* Modal for adding a new patient */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -122,6 +125,7 @@ export default function PatientRecordsScreen() {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
+            {/* Input field for entering a new patient's name */}
             <TextInput
               onChangeText={(text) => onChangePatientText(text)}
               value={patientText}
@@ -129,17 +133,15 @@ export default function PatientRecordsScreen() {
               style={styles.input}
             />
 
-            {/* Exercise selection and input goes here */}
-            {/* Example: */}
-            {/* <ExerciseSelection onAddExercise={addExercise} /> */}
-            {/* <ExerciseInput onAddExercise={addExercise} /> */}
-
+            {/* Button to add a new patient */}
             <TouchableOpacity
               style={[styles.button, styles.buttonClose]}
               onPress={savePatient}
             >
               <Text style={styles.textStyle}>Add New Patient</Text>
             </TouchableOpacity>
+
+            {/* Button to cancel adding a new patient */}
             <TouchableOpacity
               style={[styles.button, styles.buttonClose]}
               onPress={() => setModalVisible(!modalVisible)}
@@ -152,6 +154,3 @@ export default function PatientRecordsScreen() {
     </View>
   );
 }
-
-
-

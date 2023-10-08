@@ -108,14 +108,13 @@ const styles = StyleSheet.create({
         padding: 20,
         borderRadius: 10,
     },
-
     modalContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
     },
     modalContent: {
-        width: '80%', // Adjust the width as needed
+        width: '80%',
         backgroundColor: '#fff',
         padding: 20,
         borderRadius: 10,
@@ -129,31 +128,29 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         padding: 10,
         marginBottom: 10,
-        width: '100%', // Adjust the width as needed
+        width: '100%',
     },
     button: {
-        backgroundColor: 'gray', // Match your button color
+        backgroundColor: 'gray',
         padding: 10,
         borderRadius: 7,
         alignItems: 'center',
-        width: '100%', // Adjust the width as needed
+        width: '100%',
     },
     textStyle: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: 'black', // Match your text color
+        color: 'black',
     },
     buttonClose: {
-        backgroundColor: '#DDDDDD', // Match your button color
+        backgroundColor: '#DDDDDD',
     },
-
     headerText: {
-        fontSize: 24, // Adjust the font size as needed
-        fontWeight: 'bold', // Adjust the font weight as needed
-        textAlign: 'center', // Center the text horizontally
-        marginTop: 10, // Add some top margin to separate it from other content
+        fontSize: 24,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginTop: 10,
     },
-
     containerStyle: {
         height: 40,
         width: 200,
@@ -169,21 +166,18 @@ const styles = StyleSheet.create({
     itemStyle: {
         justifyContent: 'flex-start',
     },
-
     disabledButton: {
-        backgroundColor: '#ccc', // Background color for disabled button
-        borderRadius: 8, // Border radius
-        paddingVertical: 10, // Vertical padding
-        paddingHorizontal: 20, // Horizontal padding
-        alignItems: 'center', // Center content horizontally
-        justifyContent: 'center', // Center content vertically
-        opacity: 0.5, // Reduced opacity for disabled state
+        backgroundColor: '#ccc',
+        borderRadius: 8,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+        opacity: 0.5,
     },
-
     exerciseList: {
         marginTop: 20,
     },
-
     exerciseItem: {
         backgroundColor: '#f0f0f0',
         borderRadius: 8,
@@ -220,7 +214,91 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 5,
     },
-
+    deleteButton: {
+        backgroundColor: 'red',
+        borderRadius: 8,
+        padding: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 20,
+    },
+    deleteButtonText: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 16,
+    },
+    exerciseListContainer: {
+        marginTop: 20,
+        padding: 20,
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+    },
+    titleText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#333',
+        marginBottom: 10,
+    },
+    exerciseListItem: {
+        fontSize: 16,
+        color: '#555',
+        marginBottom: 10,
+    },
+    addExerciseContainer: {
+        marginTop: 20,
+        padding: 20,
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+    },
+    addExerciseInput: {
+        height: 40,
+        borderColor: '#ccc',
+        borderWidth: 1,
+        borderRadius: 5,
+        paddingHorizontal: 10,
+        marginBottom: 20,
+    },
+    addExerciseButton: {
+        backgroundColor: '#01afb0',
+        borderRadius: 8,
+        padding: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },    
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    exerciseListContainer: {
+        paddingTop: 10,
+        paddingHorizontal: 20,
+    },
+    exerciseListItemContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
+    },
+      removeExerciseButton: {
+        backgroundColor: 'red',
+        padding: 10,
+        borderRadius: 5,
+    },
+      removeExerciseText: {
+        color: 'white',
+        fontWeight: 'bold',
+    },  
 });
 
 export { styles }

@@ -1,6 +1,6 @@
 import React from "react";
 import "react-native-gesture-handler";
-//import "react-native-reanimated";
+
 import "react-native-safe-area-context";
 import "react-native-screens";
 
@@ -75,12 +75,5 @@ export default function App() {
         />
       </Stack.Navigator>
     </NavigationContainer>
-    /*
-    <View style={styles.container}>
-      <Text>RehabTrack</Text>
-      <StatusBar style="auto" />
-      
-    </View>
-    */
   );
 }

@@ -4,11 +4,7 @@ import { TouchableOpacity, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { styles } from '../stylesheet/Style';
 
-//export default FlatListBasics;
-
 export default function HomeScreen({ navigation }) {
-    //var patientData = require('../patientdata/patientDataStructure')
-    //console.log(patientData); <Text>{patientData.getName}</Text>
     return (
       <View style={styles.container}>
         <StatusBar style="auto" />
@@ -18,7 +14,7 @@ export default function HomeScreen({ navigation }) {
         <TouchableOpacity style={styles.navButton} 
             onPress={() => navigation.navigate("New Session")}>
             <Icon name="plus" size={30} />
-            <Text style={styles.navText}>New Session</Text>
+            <Text style={styles.navText}>New / Edit Session</Text>
             <Icon name="right" size={30} />
         </TouchableOpacity>
 
@@ -47,14 +43,6 @@ export default function HomeScreen({ navigation }) {
             <Icon name="right" size={30} />
         </TouchableOpacity>
         
-        {/* Chart Tool 
-        <TouchableOpacity style={styles.navButton} 
-            onPress={() => navigation.navigate("Graphing")}>
-            <Icon name="linechart" size={30} />
-            <Text style={styles.navText}>Rehab Charts</Text>
-            <Icon name="right" size={30} />
-        </TouchableOpacity>
-        */}
       </View>
     );
 }

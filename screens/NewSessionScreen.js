@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StatusBar, Text, View, TouchableOpacity, TextInput, Modal } from 'react-native';
-import Icon from 'react-native-vector-icons/AntDesign';
+import { StatusBar, Text, View, TouchableOpacity, TextInput, Modal, ScrollView } from 'react-native';
 import { styles } from '../stylesheet/Style';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PatientData, Patient, Session, Exercise } from '../patientdata/patientDataStructures';
@@ -25,7 +24,8 @@ export default function NewSessionScreen() {
   const [valueS, setValueS] = useState(null);
   const [repetitionsModalVisible, setRepetitionsModalVisible] = useState(false);
 
-  const openRepetitionsModal = () => {
+  const openRepetitionsModal = async (index) => {
+    await setSelectedExercise(exercises[index]);
     if (selectedExercise) {
       setRepetitionsModalVisible(true);
     } else {
@@ -147,6 +147,8 @@ export default function NewSessionScreen() {
         .catch((error) => {
           console.error('Error saving patient data:', error);
         });
+
+        setExercises([]);
     } else {
       console.log("No patient assigned");
     }
@@ -157,6 +159,7 @@ export default function NewSessionScreen() {
   const handleSessionSelection = (sessionName) => {
     const foundSession = selectedPatient.sessions.find((session) => session.sessionDateTime === sessionName);
     if (foundSession) {
+      setExercises([]);
       setSelectedSession(foundSession);
 
       // Update the exercises state with the exercises of the selected session
@@ -263,19 +266,6 @@ export default function NewSessionScreen() {
       </View>
 
       <View style={styles.selectionContainer}>
-        {/*}
-        <TouchableOpacity
-          style={styles.selectorButton}
-          onPress={() => {
-            setSelectedPatient(patientText);
-            setSelectedSession(new Session(new Date().toISOString())); // Create a new session
-            setModalVisible(!modalVisible);
-          }}
-        >
-          <Text style={styles.buttonText}>New Patient</Text>
-          <Icon name="plus" size={30} />
-        </TouchableOpacity>
-        */}
         {selectedPatient ? (
           <TouchableOpacity
             style={styles.navButton}
@@ -283,8 +273,7 @@ export default function NewSessionScreen() {
               if (selectedPatient) {
                 setSessionModalVisible(!sessionModalVisible);
               } else {
-                // Handle the case where no patient has been assigned
-                // You can show an alert or take any other action here
+                alert('No Patient Selected');
               }
             }}
           >
@@ -302,8 +291,7 @@ export default function NewSessionScreen() {
               if (selectedPatient) {
                 addExercise();
               } else {
-                // Handle the case where no patient has been assigned
-                // You can show an alert or take any other action here
+                alert('No Patient/Session Selected');
               }
             }}
           >
@@ -322,15 +310,15 @@ export default function NewSessionScreen() {
       </Text>
 
 
-      <View style={styles.exerciseList}>
+      <ScrollView style={styles.exerciseList}>
         {exercises.length > 0 ? (
           exercises.map((exercise, index) => (
             <TouchableOpacity
               key={index}
               style={styles.exerciseItem}
               onPress={() => {
-                setSelectedExercise(exercises[index]);
-                openRepetitionsModal(); // This function will open the modal conditionally
+                //console.log(index);
+                openRepetitionsModal(index); // This function will open the modal conditionally
               }}
             >
               <Text style={styles.exerciseText}>{exercise.exerciseName}</Text>
@@ -340,7 +328,7 @@ export default function NewSessionScreen() {
         ) : (
           <Text style={styles.noExerciseText}>No exercises added to this session</Text>
         )}
-      </View>
+      </ScrollView>
 
       <RepetitionsScreen
         visible={repetitionsModalVisible}

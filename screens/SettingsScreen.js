@@ -1,17 +1,84 @@
 import React, { useState, useEffect } from 'react';
-import { StatusBar, Text, View, TouchableOpacity, Alert, Button } from 'react-native';
+import { ScrollView, Text, View, TouchableOpacity, Alert, Button, FlatList, TextInput } from 'react-native';
 import { styles } from '../stylesheet/Style';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PatientData, Patient, Session, Exercise } from '../patientdata/patientDataStructures';
-//import { saveDataToStorage, loadDataFromStorage, patientData } from '../patientdata/patientDataStructures';
 
 export default function SettingsScreen({ navigation }) {
+  const [exercises, setExercises] = useState([]); // State to manage the list of exercises
+  const [newExercise, setNewExercise] = useState(''); // State to store the new exercise name
+  const exerciseListKey = 'Exercise List';
+
+  // Function to add a new exercise to the list
+  const addExercise = async () => {
+    try {
+      if (newExercise.trim() !== '') {
+        // Add the new exercise to the list
+        const updatedExercises = [...exercises, newExercise];
+        setExercises(updatedExercises);
+
+        // Serialize the updated exercise list to a JSON string
+        const exerciseListStorage = JSON.stringify(updatedExercises);
+
+        // Save the updated exercise list to AsyncStorage
+        await AsyncStorage.setItem(exerciseListKey, exerciseListStorage);
+        console.log("Exercise Added:", newExercise);
+        Alert.alert('Exercise Added', `The exercise "${newExercise}" has been added to the list.`);
+        setNewExercise(''); // Clear the input field
+      } else {
+        Alert.alert('Error', 'Please enter a valid exercise name.');
+      }
+    } catch (error) {
+      console.error('Error adding exercise to AsyncStorage:', error);
+    }
+  };
+
+  // Function to remove an exercise from the list
+  const removeExercise = (exerciseToRemove) => {
+    const updatedExercises = exercises.filter((exercise) => exercise !== exerciseToRemove);
+    setExercises(updatedExercises);
+    saveExerciseList(updatedExercises); // Save the updated list to AsyncStorage
+  };
+
+  // Function to clear all exercises from storage
+  const clearExerciseList = async () => {
+    try {
+      await AsyncStorage.removeItem(exerciseListKey);
+      setExercises([]); // Clear the exercises in state
+      console.log("Exercise List Cleared");
+      Alert.alert('Exercise List Cleared', 'All exercises have been cleared from AsyncStorage.');
+    } catch (error) {
+      console.error('Error clearing exercise list from AsyncStorage:', error);
+    }
+  };
+
+  // Function to save the exercise list to AsyncStorage
+  const saveExerciseList = async (exerciseList) => {
+    try {
+      const exerciseListStorage = JSON.stringify(exerciseList);
+      await AsyncStorage.setItem(exerciseListKey, exerciseListStorage);
+    } catch (error) {
+      console.error('Error saving exercise list to AsyncStorage:', error);
+    }
+  };
+
+  // Function to load the exercise list from AsyncStorage
+  const loadExerciseList = async () => {
+    try {
+      const storedExerciseList = await AsyncStorage.getItem(exerciseListKey);
+      if (storedExerciseList) {
+        const parsedExerciseList = JSON.parse(storedExerciseList);
+        setExercises(parsedExerciseList);
+      }
+    } catch (error) {
+      console.error('Error loading exercise list from AsyncStorage:', error);
+    }
+  };
+
   // Function to clear AsyncStorage data
   const clearAsyncStorage = async () => {
     try {
       await AsyncStorage.clear();
-      // Optionally, you can navigate back to the Home screen or perform any other action
-      // navigation.navigate('Home'); // Uncomment this line to navigate back
       console.log("Data Storage Cleared");
       Alert.alert('Data Cleared', 'All data has been cleared from AsyncStorage.');
     } catch (error) {
@@ -66,14 +133,10 @@ export default function SettingsScreen({ navigation }) {
   };  
 
   const checkdata = async () => {
-    //const patientData2 = new PatientData();
-    //console.log(await patientData2.loadFromStorage);
     const storedPatientData = await AsyncStorage.getItem(key);
     const parsedPatientRecords = JSON.parse(storedPatientData);
     setPatientRecords(parsedPatientRecords);
     console.log(key + ' ' + storedPatientData);
-    //const pdata = loadDataFromStorage('patientData');
-    //console.log("\nSESSIONS: " + pdata[0].patientName);
   };
 
   const loadPatientData = async () => {
@@ -90,6 +153,7 @@ export default function SettingsScreen({ navigation }) {
   useEffect(() => {
     // Load patient data when the component mounts
     loadPatientData();
+    loadExerciseList();
   }, []);
 
   return (
@@ -143,18 +207,81 @@ export default function SettingsScreen({ navigation }) {
       >
         <Text style={styles.buttonText}>Add Dummy Data</Text>
       </TouchableOpacity>
-      {/*
-      <TouchableOpacity onPress={() => {checkdata()}}><Text>Check</Text></TouchableOpacity>
-      <View>
-        <Text>Settings</Text> 
-        <Text>Patient Records:</Text>
-        <Text>{JSON.stringify(patientRecords, null, 2)}</Text>
-        <Button title="Load Data" onPress={loadPatientData} />
+
+      <View style={styles.addExerciseContainer}>
+        <TextInput
+          style={styles.addExerciseInput}
+          placeholder="Enter a new exercise"
+          value={newExercise}
+          onChangeText={(text) => setNewExercise(text)}
+        />
+        <TouchableOpacity
+          style={styles.addExerciseButton}
+          onPress={() => addExercise()}
+        >
+          <Text style={styles.buttonText}>Add Exercise</Text>
+        </TouchableOpacity>
       </View>
-      <StatusBar style="auto" />
-      */}
+      
+      <ScrollView style={styles.exerciseListContainer}>
+        <Text style={styles.titleText}>Exercise List:</Text>
+        {exercises.map((exercise, index) => (
+          <View key={index} style={styles.exerciseListItemContainer}>
+            <Text style={styles.exerciseListItem}>{exercise}</Text>
+            <TouchableOpacity onPress={() => {
+              Alert.alert(
+                'Delete exercise',
+                'Are you sure you want to delete ' + exercise + '?',
+                [
+                  {
+                    text: 'Cancel',
+                    onPress: () => console.log('Exercise deletion cancelled'),
+                    style: 'cancel',
+                  },
+                  {
+                    text: 'Confirm Delete',
+                    onPress: () => removeExercise(exercise),
+                  },
+                ],
+                { cancelable: false }
+              );
+            }}
+              style={{
+                backgroundColor:'gray',
+                padding: 10,
+                margin: 5,
+                borderRadius: 5,
+              }}
+            >
+              <Text style={styles.removeExerciseText}>Remove</Text>
+            </TouchableOpacity>
+          </View>
+        ))}
+      </ScrollView>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          // Show an alert to confirm clearing the exercise list
+          Alert.alert(
+            'Confirm Clear Exercise List',
+            'Are you sure you want to clear all exercises from the list and storage?',
+            [
+              {
+                text: 'Cancel',
+                onPress: () => console.log('Clear exercise list cancelled'),
+                style: 'cancel',
+              },
+              {
+                text: 'OK',
+                onPress: () => clearExerciseList(),
+              },
+            ],
+            { cancelable: false }
+          );
+        }}
+      >
+        <Text style={styles.buttonText}>Clear Exercise List</Text>
+      </TouchableOpacity>
     </View>
-    
   );
 }
-
