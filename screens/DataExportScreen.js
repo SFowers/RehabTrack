@@ -13,7 +13,7 @@ import {
   Session,
   Exercise,
 } from "../patientdata/patientDataStructures";
-import { styles } from "../stylesheet/Style";
+import * as Sharing from "expo-sharing";
 
 export default function DataExportScreen({ navigation, route }) {
   const loadPatientData = async () => {
@@ -97,24 +97,41 @@ export default function DataExportScreen({ navigation, route }) {
 
   const [isExporting, setIsExporting] = useState(false);
 
+  const saveFile = async (uri, filename) => {
+    try {
+      console.log("Checking if the file can be shared");
+      const isAvailable = await Sharing.isAvailableAsync();
+
+      if (!isAvailable) {
+        alert("Sharing is not available on this device!");
+        return;
+      }
+
+      console.log('File URI:', uri);
+      await Sharing.shareAsync(uri);
+    } catch (error) {
+      console.error("Error sharing the file:", error);
+      alert("Could not share the file.");
+    }
+  };
+
   const exportAllData = async () => {
     setIsExporting(true);
     let csvData = [];
 
     patientRecords.patients.forEach((patient) => {
       console.log(patient);
-      csvData.push(patient); //extra
       if (patient.sessions) {
-        // Add this check here
         patient.sessions.forEach((session) => {
           if (session.exercises) {
-            // And also check if exercises is defined before calling forEach
             session.exercises.forEach((exercise) => {
+              // Correcting data serialization here
               csvData.push({
                 "Patient Name": patient.patientName,
                 "Session Date": session.sessionDateTime,
                 "Exercise Name": exercise.exerciseName,
                 Repetitions: exercise.repetitions,
+                Details: JSON.stringify(exercise.details), // Example of converting nested object into string
               });
             });
           }
@@ -126,8 +143,10 @@ export default function DataExportScreen({ navigation, route }) {
 
     let csv = Papa.unparse(csvData);
     try {
-      await FileSystem.writeAsStringAsync(getPath("exported_data"), csv);
+      const path = getPath("exported_data");
+      await FileSystem.writeAsStringAsync(path, csv);
       console.log("Data exported successfully.");
+      saveFile(path, "exported_data.csv");
     } catch (error) {
       console.error("Error exporting data:", error);
     }
@@ -164,11 +183,10 @@ export default function DataExportScreen({ navigation, route }) {
 
     let csv = Papa.unparse(csvData);
     try {
-      await FileSystem.writeAsStringAsync(
-        getPath("exported_range_data"),
-        csv
-      );
+      const path = getPath("exported_range_data");
+      await FileSystem.writeAsStringAsync(path, csv);
       console.log("Range data exported successfully.");
+      saveFile(path, "exported_range_data.csv");
     } catch (error) {
       console.error("Error exporting range data:", error);
     }
@@ -195,11 +213,11 @@ export default function DataExportScreen({ navigation, route }) {
 
     let csv = Papa.unparse(csvData);
     try {
-      await FileSystem.writeAsStringAsync(
-        getPath(`exported_patient_data_${patientName}`),
-        csv
-      );
+      const filename = `exported_patient_data_${patientName}`;
+      const path = getPath(filename);
+      await FileSystem.writeAsStringAsync(path, csv);
       console.log(`Data for ${patientName} exported successfully.`);
+      saveFile(path, `${filename}.csv`);
     } catch (error) {
       console.error(`Error exporting ${patientName}'s data:`, error);
     }
@@ -247,6 +265,9 @@ export default function DataExportScreen({ navigation, route }) {
           style={{ zIndex: 5000, elevation: 5000 }}
           dropDownContainerStyle={{ zIndex: 5000, elevation: 5000 }}
         />
+
+        {/* Spacer to make room for dropdown when open */}
+        {open && <View style={{ height: 200 }} />}
 
         {/* Export Button */}
         <TouchableOpacity
