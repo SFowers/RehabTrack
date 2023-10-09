@@ -116,8 +116,3 @@ We recommend using Visual Studio Code or your preferred code editor for working 
 ## Conclusion
 
 You have successfully set up the RehabTrack React Native project on your development environment. Now, you can start contributing to the project, making improvements, and testing it on your mobile device or emulator. Enjoy your development journey!
-
-```
-
-This markdown guide provides detailed instructions for setting up the RehabTrack React Native project using Expo, testing it on mobile devices, and selecting code editing tools. It also includes links to relevant resources for Android Studio and Xcode installations.
-```
