@@ -2,162 +2,122 @@
 
 ## T4-OL-Tool for disability rehabilitation
 
-# Setting Up the React Native Development Environment
+# Setting Up the RehabTrack React Native Project
 
-## Overview
-
-This document provides step-by-step instructions on how to set up the development environment for a React Native project. It includes the installation of required tools, dependencies, and configurations to enable team members to work on the project effectively.
+Welcome to the RehabTrack React Native project setup guide. In this guide, we will walk you through the steps to set up your development environment for the RehabTrack project using Expo.
 
 ## Prerequisites
 
-Before setting up the environment, ensure that your system meets the following prerequisites:
+Before getting started, make sure you have the following prerequisites installed on your machine:
 
-- **Operating System:** macOS, Windows, or Linux (choose the one appropriate for your team)
-- **Node.js:** Installed globally on your system
-- **npm or Yarn:** Package manager (preferably Yarn) installed globally
-- **Android Studio:** For Android development
-- **Xcode:** For iOS development (macOS only)
-- **Git:** Version control system
-- **Code Editor:** Visual Studio Code or any preferred code editor
+- Operating System: macOS, Windows, or Linux (Choose the one that's appropriate for your system)
+- Node.js: Installed globally on your system
+- npm or Yarn: Package manager
+- Git: Version control system
+- Code Editor: Visual Studio Code or your preferred code editor
 
-## Environment Setup
+## 1. Clone the Project Repository
 
-### 1. Node.js and npm (or Yarn)
+First, you need to clone the RehabTrack project repository from GitHub to your local machine. Open your terminal or command prompt and run the following command:
 
-- Download and install Node.js from the official website: [Node.js Downloads](https://nodejs.org/).
-- Verify the installation by running the following commands in your terminal:
+```shell
+git clone https://github.com/SFowers/RehabTrack.git
+```
 
-  ```shell
-  node -v
-  npm -v
-  ```
+This will download the project's source code to your computer.
 
-  or if using Yarn:
+## 2. Node.js and npm (or Yarn)
 
-  ```shell
-  yarn -v
-  ```
+Download and install Node.js from the official website: [Node.js Downloads](https://nodejs.org/).
 
-### 2. React Native CLI
+Verify the installation by running the following commands in your terminal:
 
-- Install the React Native CLI globally and npx globally using npm or Yarn:
+```shell
+node -v
+npm -v
+```
 
-  ```shell
-  npm install -g react-native-cli
-  npm install -g npx
-  ```
+or if using Yarn:
 
-  or
+```shell
+yarn -v
+```
 
-  ```shell
-  yarn global add react-native-cli
-  ```
+## 3. Install Expo CLI
 
-### 3. Android Development
+Expo is a powerful toolchain and library for building React Native applications. To work with the RehabTrack project, you'll need Expo CLI. Install Expo CLI globally using npm or Yarn by running one of the following commands:
 
-#### Easy:
+```shell
+npm install -g expo-cli
+```
 
-- Install Expo Go on your android Device: [Expo Go on Google Play](https://play.google.com/store/apps/details?id=host.exp.exponent&pcampaignid=web_share).
-- In your computer's Terminal, run:
+or
 
-  ```shell
-  npx expo start
-  ```
+```shell
+yarn global add expo-cli
+```
 
-- Using the Expo Go App, scan the QR code that appears in your computer's terminal; this will load the application onto your mobile device.
+## 4. Install Dependencies
 
-#### Hard:
+Open a terminal at the project's file directory, or navigate to the project directory in the terminal with:
 
-- **Android Studio:** Download and install Android Studio from the official website: [Android Studio Downloads](https://developer.android.com/studio).
-- Set up Android Virtual Devices (AVDs) for testing. Launch Android Studio, open the AVD Manager, and create virtual devices.
-- Ensure that the Android SDK is installed and the ANDROID_HOME environment variable is set correctly. You can add the following to your shell profile (e.g., .bashrc or .zshrc):
+```shell
+cd RehabTrack
+```
 
-  ```shell
-  export ANDROID_HOME=/path/to/android-sdk
-  export PATH=$PATH:$ANDROID_HOME/emulator
-  export PATH=$PATH:$ANDROID_HOME/tools
-  export PATH=$PATH:$ANDROID_HOME/tools/bin
-  export PATH=$PATH:$ANDROID_HOME/platform-tools
-  ```
+Install project dependencies using Yarn or npm:
 
-- Install required Android SDK components using the Android SDK Manager.
+```shell
+yarn install
+```
 
-### 4. iOS Development (macOS Only)
+or
 
-- **Xcode:** Download and install Xcode from the Mac App Store.
-- Install Xcode Command Line Tools:
+```shell
+npm install
+```
 
-  ```shell
-  xcode-select --install
-  ```
+This will download and install all the required libraries and packages.
 
-### 5. Git
+## 5. Start the Development Server
 
-- Install Git from the official website: [Git Downloads](https://git-scm.com/downloads).
-- Configure Git with your username and email:
+You are now ready to start the development server. Run the following command:
 
-  ```shell
-  git config --global user.name "Your Name"
-  git config --global user.email "youremail@example.com"
-  ```
+```shell
+npx expo start
+```
 
-### 6. Code Editor
+Expo will open a web interface in your default web browser. This interface allows you to run the app on different platforms, including Android, iOS, and web.
 
-- Install a code editor (e.g., Visual Studio Code) and relevant extensions for React Native development.
+## 6. Testing on Mobile Devices
 
-## Project Setup
+### Expo Go App (Recommended)
 
-### 1. Clone the Project Repository
+For easy testing on mobile devices, we recommend using the Expo Go app. You can install Expo Go from the app store on your Android or iOS device:
 
-- Clone the project repository from your version control system (e.g., GitHub, Bitbucket):
+- [Expo Go on Google Play](https://play.google.com/store/apps/details?id=host.exp.exponent&pcampaignid=web_share)
+- [Expo Go on the App Store](https://apps.apple.com/us/app/expo-go/id982107779)
 
-  ```shell
-  git clone https://github.com/SFowers/RehabTrack.git
-  ```
+Once installed, use the Expo Go app to scan the QR code displayed in your computer's terminal (from `npx expo start`). This will load the RehabTrack app onto your mobile device.
 
-### 2. Install Project Dependencies
+### Emulators
 
-- Navigate to the project directory:
+If you prefer to use emulators for testing, you can set up Android emulators using Android Studio for Windows and Linux, or Xcode for macOS.
 
-  ```shell
-  cd <project-directory>
-  ```
+- Install [Android Studio](https://developer.android.com/studio)
+- Install [Xcode](https://developer.apple.com/xcode/) (macOS only)
 
-- Install project dependencies using npm or Yarn:
+Follow the respective installation guides for Android Studio and Xcode. Once installed, launch your preferred emulator from the Android Studio AVD Manager (for Android) or Xcode (for iOS).
 
-  ```shell
-  npm install
-  ```
+## 7. Code Editing
 
-  or
+We recommend using Visual Studio Code or your preferred code editor for working on the project. Install relevant extensions for React Native development in your code editor to enhance your workflow.
 
-  ```shell
-  yarn install
-  ```
+## Conclusion
 
-### 3. Run the Project
+You have successfully set up the RehabTrack React Native project on your development environment. Now, you can start contributing to the project, making improvements, and testing it on your mobile device or emulator. Enjoy your development journey!
 
-- Start the development server:
+```
 
-  ```shell
-  npx expo start
-  ```
-
-  Or
-
-  ```shell
-  npm start
-  ```
-
-  Or
-
-  ```shell
-  yarn start
-  ```
-
-**Additional Information:**
-
-- For Android development, an easy option using Expo Go is provided, which allows you to quickly run your app on an Android device.
-- For iOS development, Xcode is required, and it's only available on macOS.
-- React Native CLI and Expo are both popular development environments for React Native. The choice between them depends on your project requirements.
-- Be sure to follow the specific installation and setup instructions for your preferred tools and platforms, as additional configuration may be required for your project's needs.
+This markdown guide provides detailed instructions for setting up the RehabTrack React Native project using Expo, testing it on mobile devices, and selecting code editing tools. It also includes links to relevant resources for Android Studio and Xcode installations.
+```
