@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { Text, View, TouchableOpacity } from "react-native";
-import { styles } from "../stylesheet/Style";
 import Icon from "react-native-vector-icons/AntDesign";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as FileSystem from "expo-file-system";
@@ -14,6 +13,7 @@ import {
   Session,
   Exercise,
 } from "../patientdata/patientDataStructures";
+import { styles } from "../stylesheet/Style";
 
 export default function DataExportScreen({ navigation, route }) {
   const loadPatientData = async () => {
@@ -26,6 +26,7 @@ export default function DataExportScreen({ navigation, route }) {
       console.error("Error loading patient data from AsyncStorage:", error);
     }
   };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -34,10 +35,12 @@ export default function DataExportScreen({ navigation, route }) {
           const jsonData = JSON.parse(data);
           if (jsonData && jsonData.patients && jsonData.patients.length > 0) {
             setPatientRecords(jsonData);
-            setItems(jsonData.patients.map((patient) => ({
-              label: patient.patientName,
-              value: patient.patientName,
-            })));
+            setItems(
+              jsonData.patients.map((patient) => ({
+                label: patient.patientName,
+                value: patient.patientName,
+              }))
+            );
           } else {
             console.error("jsonData is null or does not have patients");
           }
@@ -161,7 +164,10 @@ export default function DataExportScreen({ navigation, route }) {
 
     let csv = Papa.unparse(csvData);
     try {
-      await FileSystem.writeAsStringAsync(getPath("exported_range_data"), csv);
+      await FileSystem.writeAsStringAsync(
+        getPath("exported_range_data"),
+        csv
+      );
       console.log("Range data exported successfully.");
     } catch (error) {
       console.error("Error exporting range data:", error);
@@ -238,7 +244,8 @@ export default function DataExportScreen({ navigation, route }) {
           setItems={setItems}
           onSelectItem={(item) => handlePatientSelection(item.value)}
           searchable={true}
-          dropDownContainerStyle={{alignItems: 'center'}}
+          style={{ zIndex: 5000, elevation: 5000 }}
+          dropDownContainerStyle={{ zIndex: 5000, elevation: 5000 }}
         />
 
         {/* Export Button */}
@@ -251,12 +258,18 @@ export default function DataExportScreen({ navigation, route }) {
         </TouchableOpacity>
       </View>
 
+      {/* Spacer to make room for dropdown when open */}
+      {open && <View style={{ height: 200 }} />}
+
       {/* Export Range Data */}
-      <View style={styles.exportSection}>
+      <View
+        style={[
+          styles.exportSection,
+          { zIndex: 1, position: open ? "relative" : "static" },
+        ]}
+      >
         <Text style={styles.titleText}>Export Range Data</Text>
-        <Text>
-          Select a date range to export the patient data within those dates.
-        </Text>
+        <Text>Select a date range to export the patient data within those dates.</Text>
 
         {/* Date Selection */}
         <View style={styles.selectionContainer}>
@@ -320,8 +333,6 @@ export default function DataExportScreen({ navigation, route }) {
           <Text style={styles.buttonText}>Export Range</Text>
         </TouchableOpacity>
       </View>
-
-      
 
       <StatusBar style="auto" />
     </View>
