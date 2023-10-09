@@ -132,12 +132,12 @@ export default function GraphingScreen({ navigation, route }) {
       <Text style={styles.headerText}>{patientName} Charts</Text>
 
       {/* Bar Chart */}
-      <View style={{ maxHeight: 300, maxWidth: 300, padding: 20 }}>
+      <ScrollView style={{ maxHeight: 300, padding: 20 }}>
         <BarChart
           data={filterChartData()} // Pass filtered data to the chart
           frontColor={'#01afb0'}
         />
-      </View>
+      </ScrollView>
 
       {/* Date selection controls */}
       <Text style={styles.titleText}>Date Range</Text>
