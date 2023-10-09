@@ -47,4 +47,3 @@ class Exercise {
 }
 
 export {PatientData, Patient, Session, Exercise};
-
