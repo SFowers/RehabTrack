@@ -97,7 +97,24 @@ export default function SessionScreen() {
       </ScrollView>
       <TouchableOpacity
         style={[styles.deleteButton, { backgroundColor: 'red' }]}
-        onPress={() => deleteSession()}
+        onPress={() => {
+          Alert.alert(
+            'Confirm Session Deletion',
+            'Are you sure you want to delete this session ' + sessionDateTime + '?',
+            [
+              {
+                text: 'Cancel',
+                onPress: () => console.log('Session deletion Cancelled'),
+                style: 'cancel',
+              },
+              {
+                text: 'OK',
+                onPress: () => deleteSession(),
+              },
+            ],
+            { cancelable: false }
+          );
+        }}
       >
         <Text style={styles.deleteButtonText}>Delete Session</Text>
       </TouchableOpacity>

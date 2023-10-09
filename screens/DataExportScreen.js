@@ -13,6 +13,7 @@ import {
   Session,
   Exercise,
 } from "../patientdata/patientDataStructures";
+import { styles } from '../stylesheet/Style';
 import * as Sharing from "expo-sharing";
 
 export default function DataExportScreen({ navigation, route }) {

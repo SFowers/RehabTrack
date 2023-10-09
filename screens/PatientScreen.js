@@ -1,6 +1,6 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Text, View, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity, Alert } from 'react-native';
 import { styles } from '../stylesheet/Style';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -78,7 +78,24 @@ export default function PatientScreen() {
       {/* Button to delete the patient */}
       <TouchableOpacity
         style={styles.deleteButton}
-        onPress={deletePatient}
+        onPress={() => {
+          Alert.alert(
+            'Confirm Patient Deletion',
+            'Are you sure you want to delete this patient ' + patientName + '?',
+            [
+              {
+                text: 'Cancel',
+                onPress: () => console.log('Patient deletion Cancelled'),
+                style: 'cancel',
+              },
+              {
+                text: 'OK',
+                onPress: () => deletePatient(),
+              },
+            ],
+            { cancelable: false }
+          );
+        }}
       >
         <Text style={styles.deleteButtonText}>Delete Patient</Text>
       </TouchableOpacity>
