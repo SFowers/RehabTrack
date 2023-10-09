@@ -15,7 +15,11 @@
     "@react-navigation/native-stack": "^6.9.13",
     "cli": "^1.0.1",
     "expo": "~49.0.5",
+    "expo-dev-client": "~2.4.11",
     "expo-file-system": "~15.4.4",
+    "expo-media-library": "^15.6.0",
+    "expo-permissions": "^14.4.0",
+    "expo-sharing": "^11.7.0",
     "expo-splash-screen": "~0.20.5",
     "expo-status-bar": "~1.6.0",
     "expo-updates": "~0.18.16",
@@ -29,8 +33,7 @@
     "react-native-safe-area-context": "4.6.3",
     "react-native-screens": "~3.22.0",
     "react-native-svg": "13.9.0",
-    "react-native-vector-icons": "^10.0.0",
-    "expo-dev-client": "~2.4.11"
+    "react-native-vector-icons": "^10.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
